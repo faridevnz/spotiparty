@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import StartScreen from '@/pages/StartScreen.vue'
-import PartyHome from '@/pages/PartyHome.vue'
+import PartySetup from '@/pages/PartySetup.vue'
 
 Vue.use(VueRouter)
 
@@ -12,9 +12,9 @@ const routes = [
       component: StartScreen
    },
    {
-      path: 'party-home',
-      name: 'PartyHome',
-      component: PartyHome
+      path: '/party-setup',
+      name: 'PartySetup',
+      component: PartySetup
    }
 ]
 
