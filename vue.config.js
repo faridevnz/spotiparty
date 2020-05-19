@@ -7,5 +7,10 @@ module.exports = {
          warnings: true,
          errors: true
       }
+   },
+   pwa: {
+      workboxOptions: {
+         skipWaiting: true
+      }
    }
 }
