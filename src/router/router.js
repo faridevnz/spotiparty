@@ -12,7 +12,7 @@ const routes = [
       component: StartScreen
    },
    {
-      path: '/party-setup',
+      path: '/party-home',
       name: 'PartySetup',
       component: PartySetup
    }

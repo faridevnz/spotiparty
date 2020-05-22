@@ -9,11 +9,12 @@
       <a href="https://vuejs.org/">
          <img alt="Made with vue" src="https://img.shields.io/badge/Made%20with-Vue-27b183.svg" />
       </a>
+      <img alt="CI" src="https://github.com/SpotiParty/spotiparty/workflows/CI/badge.svg">
+   </p>
+   <p align="center">
       <a href="https://firebase.google.com/">
          <img alt="Made with firebase" src="https://img.shields.io/badge/Made%20with-Firebase-fbc246.svg" />
       </a>
-   </p>
-   <p align="center">
       <a href="https://code.visualstudio.com/">
          <img alt="Made on VSCode" src="https://img.shields.io/badge/Made%20on-VSCode-00aaed.svg" />
       </a>

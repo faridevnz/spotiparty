@@ -1,7 +1,7 @@
 <template>
    <div class="party-setup fullscreen">
-      <h1>Logged in correctly</h1>
-      <h2>Il codice del tuo party è {{ party.party_code }}</h2>
+      <h1>Benvenuto nel party</h1>
+      <h2>Il token spotify che utilizzerai è {{ access_token }}</h2>
    </div>
 </template>
 

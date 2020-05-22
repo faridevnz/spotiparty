@@ -46,9 +46,19 @@ const user = {
       }
    }
 }
+const party = {
+   namespaced: true,
+   state: {
+      party: {
+         party_code: null
+      }
+   },
+   actions: { createParty() {} }
+}
+
 localVue.use(Vuex)
 const store = new Vuex.Store({
-   modules: { user }
+   modules: { user, party }
 })
 
 describe('PartyHome', () => {
