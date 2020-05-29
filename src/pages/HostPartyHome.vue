@@ -1,6 +1,6 @@
 <template>
    <div class="host-party-home fullscreen">
-      <div v-for="(track, index) in track_list" :key="index">
+      <div v-for="(track, index) in track_list" :key="index" :class="demo">
          {{ track }}
       </div>
    </div>
@@ -20,7 +20,7 @@ export default {
    },
    created() {
       //TODO da rimuovere, per la dimostrazione al professore
-      setTimeout(() => {}, 600)
+      setTimeout(() => {}, 1000)
       this.party.current_playlist.forEach(item => {
          this.track_list.push(item.track.name)
       })
@@ -35,4 +35,6 @@ export default {
    display: flex
    flex-direction: column
    justify-content: center
+   .demo
+      color: white
 </style>
