@@ -55,4 +55,8 @@ button
    background-color: map-get($colors, 'primary')
    color: white
    font-size: 24px
+.disabled
+   background-color: map-get($colors, 'disabled')
+   color: white
+   font-size: 24px
 </style>

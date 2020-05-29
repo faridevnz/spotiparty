@@ -8,5 +8,6 @@
    "bracketSpacing": true,
    "jsxBracketSameLine": false,
    "htmlWhitespaceSensitivity": "css",
-   "endOfLine": "lf"
+   "endOfLine": "lf",
+   "printWidth": 100
 }

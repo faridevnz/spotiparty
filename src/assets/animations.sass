@@ -1,0 +1,75 @@
+.slide-fade-horizontal-left-enter-active,
+.slide-fade-horizontal-left-leave-active
+  transition: all .2s
+.slide-fade-horizontal-left-enter
+  transform: translate(100px, 0px)
+  opacity: 0
+.slide-fade-horizontal-left-leave-to
+  transform: translate(-100px, 0px)
+  opacity: 0
+
+
+.slide-fade-horizontal-right-enter-active,
+.slide-fade-horizontal-right-leave-active
+  transition: all .2s
+.slide-fade-horizontal-right-enter
+  transform: translate(-100px, 0px)
+  opacity: 0
+.slide-fade-horizontal-right-leave-to
+  transform: translate(100px, 0px)
+  opacity: 0
+
+
+.fade-enter-active,
+.fade-leave-active
+  transition: all 5s
+.fade-enter
+  opacity: 0
+.fade-leave-to
+  opacity: 0
+
+
+.list-left-enter-active,
+.list-left-leave-active
+  transition: all .6s
+.list-left-enter,
+.list-left-leave-to
+  transform: translate(-100px, 0px)
+  opacity: 0
+
+
+.list-right-enter-active,
+.list-right-leave-active
+  transition: all .6s
+.list-right-enter,
+.list-right-leave-to
+  transform: translate(100px, 0px)
+  opacity: 0
+
+
+.tab-right-enter-active
+  animation: tab-right .6s
+.tab-right-leave-active
+  animation: tab-right .6s reverse
+@keyframes tab-right
+  0%
+    transform: translate(120px, 0px)
+    opacity: 0
+  30%
+    opacity: 0
+  100%
+    opacity: 1
+
+
+.tab-left-enter-active
+  animation: tab-left .6s
+.tab-left-leave-active
+  animation: tab-left .6s reverse
+@keyframes tab-left
+  0%
+    transform: translate(-120px, 0px)
+    opacity: 0
+  30%
+    opacity: 0
+  100%
+    opacity: 1

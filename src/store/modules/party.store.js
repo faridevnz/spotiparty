@@ -5,12 +5,16 @@ export default {
    namespaced: true,
    state: {
       party: {
-         party_code: null
+         party_code: null,
+         current_playlist: []
       }
    },
    mutations: {
       ADD_PARTY_CODE(state, party_code) {
          state.party.party_code = party_code
+      },
+      ADD_TRACKS_TO_QUEUE(state, tracks) {
+         state.party.current_playlist = [...tracks]
       }
    },
    actions: {
@@ -26,7 +30,12 @@ export default {
             party_code: state.party.party_code,
             spotify_token: rootState.user.access_token
          })
-      })
+      }),
+      addTracksToQueue({ commit }, tracks) {
+         commit('ADD_TRACKS_TO_QUEUE', tracks)
+      }
    },
-   getters: {}
+   getters: {
+      logged_in: state => !!state.party.party_code
+   }
 }
