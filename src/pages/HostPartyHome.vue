@@ -1,8 +1,6 @@
 <template>
    <div class="host-party-home fullscreen">
-      <div v-for="(track, index) in track_list" :key="index" :class="demo">
-         {{ track }}
-      </div>
+      {{ this.party.current_playlist }}
    </div>
 </template>
 
@@ -10,20 +8,8 @@
 import { mapState } from 'vuex'
 
 export default {
-   data() {
-      return {
-         track_list: []
-      }
-   },
    computed: {
       ...mapState('party', ['party'])
-   },
-   created() {
-      //TODO da rimuovere, per la dimostrazione al professore
-      setTimeout(() => {}, 1000)
-      this.party.current_playlist.forEach(item => {
-         this.track_list.push(item.track.name)
-      })
    }
 }
 </script>
