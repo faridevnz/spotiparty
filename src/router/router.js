@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import store from '@/store/store.js'
 import StartScreen from '@/pages/StartScreen.vue'
 import PartySetup from '@/pages/PartySetup.vue'
+import JoinParty from '@/pages/JoinParty.vue'
+import GuestPartyHome from '@/pages/GuestPartyHome.vue'
 import SelectPlaylist from '@/pages/SelectPlaylist.vue'
 import HostPartyHome from '@/pages/HostPartyHome.vue'
 
@@ -22,6 +24,16 @@ const routes = [
       path: '/party-setup',
       name: 'PartySetup',
       component: PartySetup
+   },
+   {
+      path: '/join-party',
+      name: 'JoinPartyHome',
+      component: JoinParty
+   },
+   {
+      path: '/guest-party-home',
+      name: 'GuestPartyHome',
+      component: GuestPartyHome
    },
    {
       path: '/select-playlist',

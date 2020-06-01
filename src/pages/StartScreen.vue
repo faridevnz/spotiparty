@@ -7,7 +7,9 @@
          <a :href="link">
             <BaseButton>Crea party</BaseButton>
          </a>
-         <BaseButton>Partecipa</BaseButton>
+         <router-link to="/join-party">
+            <BaseButton>Partecipa</BaseButton>
+         </router-link>
       </div>
    </div>
 </template>
@@ -17,7 +19,7 @@ export default {
    data() {
       return {
          link:
-            'https://accounts.spotify.com/authorize?client_id=a765347deed847c3980a14cdc4966112&redirect_uri=https://romantic-shirley-7d10fd.netlify.app/party-setup&scope=user-read-private%20user-read-email&response_type=token&state=123'
+            'https://accounts.spotify.com/authorize?client_id=a765347deed847c3980a14cdc4966112&redirect_uri=http://localhost:8080/party-setup&scope=user-read-private%20user-read-email%20user-modify-playback-state%20user-read-playback-state&response_type=token&state=123'
       }
    }
 }

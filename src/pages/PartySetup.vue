@@ -44,6 +44,7 @@ export default {
 
 <style lang="sass" scoped>
 .party-setup
+   align-items: center
    display: flex
    flex-direction: column
    justify-content: space-between
