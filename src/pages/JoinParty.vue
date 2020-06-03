@@ -14,17 +14,8 @@
             </div>
             <transition name="slide-left" mode="out-in">
                <div v-if="input_is_open" class="button">
-                  <BaseButtonWithIcon
-                     :width="48"
-                     :height="48"
-                     @click="checkPartyCode"
-                  >
-                     <BaseIcon
-                        :width="13"
-                        :height="17"
-                        viewBox="0 0 13 17"
-                        color="white"
-                     >
+                  <BaseButtonWithIcon :width="48" :height="48" @click="checkPartyCode">
+                     <BaseIcon :width="13" :height="17" viewBox="0 0 13 17" color="white">
                         <Arrow />
                      </BaseIcon>
                   </BaseButtonWithIcon>

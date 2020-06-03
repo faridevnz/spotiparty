@@ -42,9 +42,9 @@ export default {
             commit('ADD_PARTY_CODE', input_code)
          }
       },
-     addTracksToQueue({ commit }, tracks) {
+      addTracksToQueue({ commit }, tracks) {
          commit('ADD_TRACKS_TO_QUEUE', tracks)
-     }
+      }
    },
    getters: {
       isPartyCode(state) {

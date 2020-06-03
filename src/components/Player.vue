@@ -12,12 +12,7 @@
          </div>
       </div>
       <div class="container-controls">
-         <CircleButton
-            v-if="!this.is_playing"
-            :width="100"
-            :height="100"
-            @click="play"
-         >
+         <CircleButton v-if="!this.is_playing" :width="100" :height="100" @click="play">
             <div class="flex">
                <BaseIcon :width="51" :height="51" viewBox="0 0 51 51">
                   <Play />
@@ -92,9 +87,7 @@ export default {
                this.user_devices.push(dev)
             })
             if (!this.device_active) {
-               const older_device = this.user_devices[
-                  this.user_devices.length - 1
-               ]
+               const older_device = this.user_devices[this.user_devices.length - 1]
                this.device_active = older_device.id
                this.setDevice(older_device.id)
             }
