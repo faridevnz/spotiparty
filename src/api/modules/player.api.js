@@ -6,7 +6,9 @@ export default {
       const param = device_id ? '?device_id=' + device_id : ''
       return apiClient.put('/me/player/play' + param, {
          context_uri: playlist_uri,
-         uri: track_uri
+         offset: {
+            uri: track_uri
+         }
       })
    },
    resume() {
@@ -24,6 +26,15 @@ export default {
       })
    },
    getState() {
+      return apiClient.get('/me/player')
+   },
+   addToQueue(track_uri) {
+      return apiClient.post(`/me/player/queue?uri=${track_uri}`)
+   },
+   deactivateShuffle() {
+      return apiClient.put('/me/player/shuffle?state=false')
+   },
+   getCurrentTrack() {
       return apiClient.get('/me/player')
    }
 }

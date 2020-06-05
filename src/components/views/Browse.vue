@@ -12,13 +12,13 @@ export default {
       ...mapGetters('browse', ['category_playlists'])
    },
    methods: {
-      ...mapActions('browse', ['getCategoryPlaylists', 'categoryPlaylists']),
+      ...mapActions('browse', ['getCategoryPlaylists']),
       async openCategory(category_id) {
          await this.getCategoryPlaylists(category_id)
          this.$router.push({
             name: 'CategoryPlaylists',
             params: {
-               playlist_list: await this.categoryPlaylists(category_id)
+               playlist_list: await this.category_playlists(category_id)
             }
          })
       },

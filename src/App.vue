@@ -4,6 +4,10 @@
    </div>
 </template>
 
+<script>
+export default {}
+</script>
+
 <style lang="sass">
 @import url('https://rsms.me/inter/inter.css');
 
@@ -19,4 +23,14 @@
   min-height: 100vh
   min-width: 100vw
   width: 100vw
+
+a
+  text-decoration: none
+  color: inherit
+a:hover
+  text-decoration: none
+  color: inherit
+a:visited
+  text-decoration: none
+  color: inherit
 </style>

@@ -11,6 +11,13 @@ import HostPartyHome from '@/pages/HostPartyHome.vue'
 import PlaylistList from '@/components/views/PlaylistList.vue'
 import CategoryList from '@/components/views/CategoryList.vue'
 import Browse from '@/components/views/Browse.vue'
+import HostPlayer from '@/components/views/HostPlayer.vue'
+import HostVoting from '@/components/views/HostVoting.vue'
+import HostSetting from '@/components/views/HostSetting.vue'
+import GuestPlayer from '@/components/views/GuestPlayer.vue'
+import GuestVoting from '@/components/views/GuestVoting.vue'
+import GuestSetting from '@/components/views/GuestSetting.vue'
+import GuestRequireAccess from '@/components/views/GuestRequireAccess.vue'
 
 Vue.use(VueRouter)
 
@@ -29,11 +36,6 @@ const routes = [
       path: '/join-party',
       name: 'JoinPartyHome',
       component: JoinParty
-   },
-   {
-      path: '/guest-party-home',
-      name: 'GuestPartyHome',
-      component: GuestPartyHome
    },
    {
       path: '/select-playlist',
@@ -78,10 +80,55 @@ const routes = [
       ]
    },
    {
-      path: '/host-party-home',
+      path: '/guest-party-home',
+      name: 'GuestPartyHome',
+      component: GuestPartyHome,
+      meta: { requireAuth: true },
+      children: [
+         {
+            path: 'player',
+            name: 'GuestPlayer',
+            component: GuestPlayer
+         },
+         {
+            path: 'votes',
+            name: 'GuestVoting',
+            component: GuestVoting
+         },
+         {
+            path: 'settings',
+            name: 'GuestSetting',
+            component: GuestSetting
+         },
+         {
+            path: 'require-access',
+            name: 'GuestRequireAccess',
+            component: GuestRequireAccess
+         }
+      ]
+   },
+   {
+      path: '/host-party-home/:id',
       name: 'HostPartyHome',
       component: HostPartyHome,
-      meta: { requireAuth: true }
+      meta: { requireAuth: true },
+      children: [
+         {
+            path: 'player',
+            name: 'HostPlayer',
+            component: HostPlayer
+         },
+         {
+            path: 'votes',
+            name: 'HostVoting',
+            component: HostVoting
+         },
+         {
+            path: 'settings',
+            name: 'HostSetting',
+            component: HostSetting
+         }
+      ]
    }
 ]
 

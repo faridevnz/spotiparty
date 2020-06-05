@@ -2,30 +2,35 @@
    <div class="container">
       <div class="main">
          <div>
-            <img :src="imageUrl" alt="immagine non disponibile" />
+            <img :src="imageUrl" alt="immagine non disponibile" width="256" />
          </div>
-         <h2>{{ trackName }}</h2>
+         <h2>{{ track.name }}</h2>
          <div class="artists">
-            <p v-for="artist in artists" :key="artist.id">
-               {{ artist }}
+            <p v-for="artist in track.artists" :key="artist.id">
+               {{ artist.name }}
             </p>
          </div>
       </div>
       <div class="container-controls">
-         <CircleButton v-if="!this.is_playing" :width="100" :height="100" @click="play">
+         <BaseButtonWithIcon v-if="!playback_state" :width="100" :height="100" @click="play">
             <div class="flex">
                <BaseIcon :width="51" :height="51" viewBox="0 0 51 51">
                   <Play />
                </BaseIcon>
             </div>
-         </CircleButton>
+         </BaseButtonWithIcon>
          <BaseButtonWithIcon v-else :width="100" :height="100" @click="pause">
             <BaseIcon :width="51" :height="51" viewBox="0 0 51 51">
                <Pause />
             </BaseIcon>
          </BaseButtonWithIcon>
+         <BaseButtonWithIcon :width="70" :height="70" @click="next">
+            <BaseIcon :width="51" :height="51">
+               <StepForward />
+            </BaseIcon>
+         </BaseButtonWithIcon>
          <div class="devices">
-            <div class="selector">
+            <div class="selector" v-if="show_devices_popup">
                <div
                   class="device"
                   v-for="device in this.user_devices"
@@ -48,47 +53,63 @@
 
 <script>
 import PlayerApi from '@/api/modules/player.api.js'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
-   props: {
-      playlist_uri: String,
-      track: Object
-   },
    data() {
       return {
-         state: null,
          user_devices: [],
-         device_active: null,
-         is_playing: false
+         active_device: null,
+         show_devices_popup: false
       }
    },
    computed: {
+      ...mapState('party', ['party_playlist', 'currently_playing', 'playback_state']),
       imageUrl() {
-         return this.track.album.images[0].url
+         return this.track.images[0].url
       },
-      trackName() {
-         return this.track.name
-      },
-      trackArtists() {
-         var artists = []
-         this.track.artists.forEach(a => {
-            artists.push(a.name)
-         })
-         return artists
+      track() {
+         if (this.currently_playing == null) {
+            const track = this.party_playlist.tracks[0]
+            return track
+         } else {
+            const track = this.currently_playing
+            return track
+         }
       }
    },
    methods: {
       ...mapActions('user', ['setToken']),
+      ...mapActions('party', ['partyPlay', 'partyPause', 'nextTrack']),
+      async pause() {
+         await this.partyPause()
+         await PlayerApi.pause()
+      },
+      async play() {
+         if (this.currently_playing == null) {
+            const track = await this.nextTrack()
+            await PlayerApi.play(this.party_playlist.uri, track.uri, this.active_device)
+            await PlayerApi.deactivateShuffle()
+            await this.partyPlay()
+         } else {
+            await PlayerApi.resume()
+            await this.partyPlay()
+         }
+      },
+      async next() {
+         const track = await this.nextTrack()
+         console.log(`next track: ${track.name}`)
+         await PlayerApi.play(this.party_playlist.uri, track.uri, this.active_device)
+      },
       async getDevices() {
          await PlayerApi.getUserDevices().then(res => {
             this.user_devices = []
-            res.data.devices.forEach(dev => {
-               this.user_devices.push(dev)
+            res.data.devices.forEach(device => {
+               this.user_devices.push(device)
             })
-            if (!this.device_active) {
+            if (!this.active_device) {
                const older_device = this.user_devices[this.user_devices.length - 1]
-               this.device_active = older_device.id
+               this.active_device = older_device.id
                this.setDevice(older_device.id)
             }
          })
@@ -96,47 +117,29 @@ export default {
       async setDevice(device) {
          await PlayerApi.switchDevice(device)
       },
-      async pause() {
-         this.state = !this.state
-         await PlayerApi.pause()
-      },
-      async play() {
-         this.state = !this.state
-         // TODO dopo aver collegato con le tracce
-         // testare se usare resume o play
-         await PlayerApi.resume()
-         // await PlayerApi.play(
-         //    this.playlist_uri,
-         //    this.tracks_uri[0],
-         //    this.device_active,
-         //    res => {
-         //       console.log(res.data)
-         //    }
-         // )
-      },
       clickDevices() {
          this.getDevices()
-         this.$refs.selector.classList.toggle('show')
+         this.show_devices_popup = !this.show_devices_popup
       },
       selectDevice(device_id) {
-         console.log(device_id)
-         this.device_active = device_id
+         this.active_device = device_id
          this.setDevice(device_id)
          this.clickDevices()
       },
       // metodo che prende lo stato attuale di riproduzione
       async getState() {
-         await PlayerApi.getState().then(res => {
-            this.state = res.data.is_playing
+         await PlayerApi.getState().then(response => {
+            if (response.data.state) {
+               this.partyPlay()
+            } else {
+               this.partyPause()
+            }
          })
-      },
-      async setup() {
-         await this.getDevices()
-         await this.getState()
       }
    },
-   created() {
-      this.setup()
+   async created() {
+      await this.getDevices()
+      await this.getState()
    }
 }
 </script>
@@ -157,10 +160,8 @@ export default {
 .selector
    background-color: #2C2C2C
    border-radius: 10px
-   display: none
    margin-bottom: 10px
    padding: 5px 15px
-.show
    display: block
 .device
    align-items: center

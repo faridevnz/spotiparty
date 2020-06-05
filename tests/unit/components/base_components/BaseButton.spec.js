@@ -2,13 +2,10 @@ import { mount } from '@vue/test-utils'
 import BaseButton from '@/components/base_components/BaseButton.vue'
 
 function getRandomString(length) {
-   var randomChars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+   var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
    var result = ''
    for (var i = 0; i < length; i++) {
-      result += randomChars.charAt(
-         Math.floor(Math.random() * randomChars.length)
-      )
+      result += randomChars.charAt(Math.floor(Math.random() * randomChars.length))
    }
    return result
 }

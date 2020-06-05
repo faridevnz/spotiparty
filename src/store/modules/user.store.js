@@ -19,13 +19,9 @@ export default {
          commit('SET_ACCESS_TOKEN', token)
       },
       async setUser({ commit }) {
-         await UserApi.getUserInfo()
-            .then(response => {
-               commit('SET_USER_INFO', response.data)
-            })
-            .catch(error => {
-               console.log(error)
-            })
+         await UserApi.getUserInfo().then(response => {
+            commit('SET_USER_INFO', response.data)
+         })
       }
    },
    getters: {

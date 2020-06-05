@@ -9,7 +9,7 @@
                   :placeholder="placeholder"
                   v-model="input_code"
                   :value="input_code"
-                  :error="wrong_code"
+                  :error="!code_is_correct"
                />
             </div>
             <transition name="slide-left" mode="out-in">
@@ -27,49 +27,49 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
    data() {
       return {
          input_code: '',
          input_is_open: false,
-         submitted: false,
-         verifying: false
+         code_is_correct: true
       }
    },
    computed: {
+      ...mapState('party', ['party_code']),
+      ...mapState('user', ['access_token']),
       placeholder() {
-         if (!this.isPartyCode() && this.submitted) {
+         if (!this.code_is_correct) {
             return 'Codice errato'
          }
          return 'Codice'
-      },
-      wrong_code() {
-         if (!this.isPartyCode() && this.submitted) {
-            return true
-         }
-         return false
+      }
+   },
+   watch: {
+      access_token() {
+         this.$router.push({ name: 'GuestPartyHome' })
       }
    },
    methods: {
-      ...mapActions('party', ['joinParty']),
-      ...mapGetters('party', ['isPartyCode']),
+      ...mapActions('party', ['joinParty', 'updateAccessToken']),
       displayButton() {
          this.input_is_open = true
       },
       hideButton() {
          this.input_is_open = false
       },
-      checkPartyCode() {
-         this.verifying = true
-         this.joinParty(this.input_code)
-         this.submitted = true
+      async checkPartyCode() {
+         this.code_is_correct = await this.joinParty(this.input_code)
+         if (this.code_is_correct) {
+            this.updateAccessToken()
+         }
          this.input_code = ''
       }
    },
    created() {
-      if (this.isPartyCode()) {
+      if (this.party_code != null) {
          this.$router.push({ name: 'GuestPartyHome' })
       }
    }

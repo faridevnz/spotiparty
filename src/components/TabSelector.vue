@@ -31,6 +31,7 @@ export default {
    },
    methods: {
       selectTab(index) {
+         //Change animation direction according to the tab selected
          index > this.selected_tab ? (this.animation = 'tab-left') : (this.animation = 'tab-right')
          this.selected_tab = index
          this.$emit('tab-selected', index)

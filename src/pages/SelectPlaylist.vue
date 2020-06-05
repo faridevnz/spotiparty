@@ -35,6 +35,8 @@ export default {
    },
    computed: {
       ...mapState('playlist', ['user_playlists']),
+      ...mapState('party', ['party_code']),
+      //Enable the button only if a paylist has been selected
       button_type() {
          if (this.selected_playlist_id == null) {
             return 'disabled'
@@ -45,33 +47,46 @@ export default {
    methods: {
       ...mapActions('playlist', ['getListOfPlaylists']),
       ...mapActions('playlist', ['getPlaylistTracksAndAddToPlayQueue']),
+      /*
+         Select the correct tab and change the animation direction accordingly
+      */
       changeTab(index) {
-         index == 0
-            ? this.$router.push({
-                 name: 'MyPlaylists',
-                 params: {
-                    playlist_list: this.user_playlists
-                 }
-              })
-            : this.$router.push({ name: 'Browse' })
-         index == 0
-            ? (this.animation = 'slide-fade-horizontal-right')
-            : (this.animation = 'slide-fade-horizontal-left')
+         if (index == 0) {
+            this.$router.push({
+               name: 'MyPlaylists',
+               params: {
+                  playlist_list: this.user_playlists
+               }
+            })
+            this.animation = 'slide-fade-horizontal-right'
+         } else {
+            this.$router.push({ name: 'Browse' })
+            this.animation = 'slide-fade-horizontal-left'
+         }
       },
       selectPlaylist(playlist_id) {
          this.selected_playlist_id = playlist_id
       },
-      choosePlaylist() {
+      /*
+         Get the tracks for the selected playlist and add them to the local queue
+         (Vuex) and in the party playlist in Spotify
+      */
+      async choosePlaylist() {
          if (this.selected_playlist_id != null) {
-            this.getPlaylistTracksAndAddToPlayQueue(this.selected_playlist_id)
-            this.$router.push({ name: 'HostPartyHome' })
+            await this.getPlaylistTracksAndAddToPlayQueue(this.selected_playlist_id)
+            this.$router.push({
+               name: 'HostPartyHome',
+               params: { id: this.party_code }
+            })
          }
       }
    },
-   created() {
+   async created() {
+      //Get the user playlists if they are not in the store
       if (this.user_playlists.length == 0) {
-         this.getListOfPlaylists()
+         await this.getListOfPlaylists()
       }
+      //Display the page to select user playlist by default
       if (this.$router.currentRoute.name != 'MyPlaylists') {
          this.$router.push({
             name: 'MyPlaylists',
