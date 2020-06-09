@@ -2,7 +2,7 @@
    <div class="select-playlist">
       <div class="header">
          <p class="title">Scegli una playlist</p>
-         <TabSelector :tabs="tab_options" @tab-selected="changeTab" />
+         <TabSelector :tabs="tab_options" @tabSelected="changeTab" />
       </div>
       <div class="playlist-list">
          <transition :name="animation" mode="out-in">

@@ -34,15 +34,16 @@ export default {
 <style lang="sass" scoped>
 @import '@/assets/variables.scss'
 .guest-voting
+   align-items: center
    background-color: map-get($colors, "background")
-   padding: 15px
    display: flex
    flex-direction: column
-   align-items: center
    justify-content: flex-start
+   padding: 15px
 .title
-   font-weight: 600
+   color: white
    font-size: 24px
+   font-weight: 600
    margin: 0px 0px 20px 0px
 .selected
    filter: brightness(150%)

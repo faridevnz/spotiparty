@@ -1,9 +1,13 @@
 <template>
    <div class="host-voting">
       <div class="title">Vota la prossima canzone</div>
-      <div v-for="track in party_playlist.tracks" :key="track.id">
-         <Song :track="track" @click="voteSong" />
-      </div>
+      <Song
+         v-for="track in party_playlist.tracks"
+         :key="track.id"
+         :track="track"
+         @click="voteSong"
+         :class="{ selected: track.id == voted_song_id }"
+      />
    </div>
 </template>
 
@@ -16,7 +20,7 @@ export default {
       Song
    },
    computed: {
-      ...mapState('party', ['party_playlist'])
+      ...mapState('party', ['party_playlist', 'voted_song_id'])
    },
    methods: {
       ...mapActions('party', ['uploadFirebaseVote']),
@@ -28,14 +32,20 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+@import '@/assets/variables.scss'
+
 .host-voting
-   padding: 20px
+   align-items: center
+   background-color: map-get($colors, "background")
    display: flex
    flex-direction: column
-   align-items: flex-start
    justify-content: flex-start
+   padding: 15px
 .title
-   font-weight: 600
+   color: white
    font-size: 24px
+   font-weight: 600
    margin: 0px 0px 20px 0px
+.selected
+   filter: brightness(150%)
 </style>

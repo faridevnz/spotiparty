@@ -65,30 +65,30 @@ export default {
 <style lang="sass" scoped>
 .party-setup
    align-items: center
+   align-items: center
+   background-color: white
+   box-sizing: border-box
    display: flex
    flex-direction: column
    justify-content: space-between
-   align-items: center
    padding: 10%
-   box-sizing: border-box
-   background-color: white
 .title
-   text-align: center
    font-size: 24px
    font-weight: 700
    line-height: 0.5
-.party-code
    text-align: center
+.party-code
    font-size: 36px
    font-weight: 800
    margin: 12px
+   text-align: center
 .captions
+   align-items: center
    display: flex
    flex-direction: column
-   align-items: center
-   justify-content: center
    font-size: 24px
    font-weight: 400
+   justify-content: center
    margin: 0px
    > p
       margin: 0px

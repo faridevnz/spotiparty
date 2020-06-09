@@ -7,6 +7,7 @@ import JoinParty from '@/pages/JoinParty.vue'
 import GuestPartyHome from '@/pages/GuestPartyHome.vue'
 import SelectPlaylist from '@/pages/SelectPlaylist.vue'
 import HostPartyHome from '@/pages/HostPartyHome.vue'
+import GuestDataLoader from '@/pages/GuestDataLoader.vue'
 
 import PlaylistList from '@/components/views/PlaylistList.vue'
 import CategoryList from '@/components/views/CategoryList.vue'
@@ -80,7 +81,7 @@ const routes = [
       ]
    },
    {
-      path: '/guest-party-home',
+      path: '/guest-party-home/:id',
       name: 'GuestPartyHome',
       component: GuestPartyHome,
       meta: { requireAuth: true },
@@ -129,6 +130,11 @@ const routes = [
             component: HostSetting
          }
       ]
+   },
+   {
+      path: '/guest-data-loader',
+      name: 'GuestDataLoader',
+      component: GuestDataLoader
    }
 ]
 

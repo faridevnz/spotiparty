@@ -26,18 +26,20 @@ export default {
    cleanTracksResponse(response) {
       const tracks = []
       response.forEach(track => {
-         const artists = this.cleanArtistsResponse(track.track.artists)
-         const parsedTrack = {
-            id: track.track.id,
-            images: track.track.album.images,
-            name: track.track.name,
-            artists: artists,
-            uri: track.track.uri,
-            votes: 0,
-            duration_ms: null,
-            played: false
+         if (track.track != null) {
+            const artists = this.cleanArtistsResponse(track.track.artists)
+            const parsedTrack = {
+               id: track.track.id,
+               images: track.track.album.images,
+               name: track.track.name,
+               artists: artists,
+               uri: track.track.uri,
+               votes: 0,
+               duration_ms: null,
+               played: false
+            }
+            tracks.push(parsedTrack)
          }
-         tracks.push(parsedTrack)
       })
       return tracks
    },

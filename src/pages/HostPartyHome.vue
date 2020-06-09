@@ -1,7 +1,7 @@
 <template>
-   <div class="host-party-home fullscreen">
-      <router-view></router-view>
-      <HostTabBar class="tab" />
+   <div class="fullscreen">
+      <router-view class="tab"></router-view>
+      <HostTabBar class="tab-bar" />
    </div>
 </template>
 
@@ -45,13 +45,11 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.host-party-home
-   align-items: space-between
-   color: white
-   display: flex
-   flex-direction: column
-   justify-content: flex-start
-   .tab
-      position: fixed
-      bottom: 0px
+.tab-bar
+   bottom: 0px
+   position: fixed
+.tab
+   box-sizing: border-box
+   margin: 0px 0px 72px 0px
+   width: 100%
 </style>
