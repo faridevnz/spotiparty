@@ -1,13 +1,14 @@
 <template>
    <div class="guest-voting">
       <div class="title">Vota la prossima canzone</div>
-      <Song
-         :track="track"
-         @click="voteSong"
-         :class="{ selected: track.id == voted_song_id }"
-         v-for="track in party_playlist.tracks"
-         :key="track.id"
-      />
+      <div v-for="track in party_playlist.tracks" :key="track.id" class="song">
+         <Song
+            :track="track"
+            @click="voteSong"
+            :class="{ selected: track.id == voted_song_id }"
+            v-if="!track.played"
+         />
+      </div>
    </div>
 </template>
 
@@ -34,7 +35,7 @@ export default {
 <style lang="sass" scoped>
 @import '@/assets/variables.scss'
 .guest-voting
-   align-items: center
+   align-items: flex-start
    background-color: map-get($colors, "background")
    display: flex
    flex-direction: column
@@ -47,4 +48,6 @@ export default {
    margin: 0px 0px 20px 0px
 .selected
    filter: brightness(150%)
+.song
+   width: 100%
 </style>

@@ -42,6 +42,7 @@ export default {
       UPDATE_SONG_VOTES(state, song_votes) {
          const track = state.party_playlist.tracks.find(track => track.id == song_votes.track_id)
          track.votes = song_votes.votes
+         track.played = song_votes.played
       },
       VOTE_A_SONG(state, track_id) {
          state.voted_song_id = track_id
@@ -206,7 +207,8 @@ export default {
          track_ids.forEach(track_id => {
             const song_votes = {
                track_id: track_id,
-               votes: 0
+               votes: 0,
+               played: false
             }
             songs_votes.push(song_votes)
          })
@@ -254,11 +256,20 @@ export default {
       },
       uploadCurrentlyPlaying: firestoreAction(async ({ state }, track) => {
          console.log(`Uploading next track: ${track.name}`)
-         return await db
+         await db
             .collection('party')
             .doc(state.party_code)
             .update({
                currently_playing: track
+            })
+         let new_songs_votes = JSON.parse(JSON.stringify(state.firebase_votes.songs_votes))
+         let played_track = new_songs_votes.find(song_votes => song_votes.track_id == track.id)
+         played_track.played = true
+         return await db
+            .collection('votes')
+            .doc(state.party_code)
+            .update({
+               songs_votes: new_songs_votes
             })
       }),
       async updateLocalCurrentlyPlaying({ commit }, track) {
@@ -303,7 +314,7 @@ export default {
       next_track(state) {
          let next_track = state.party_playlist.tracks[0]
          state.party_playlist.tracks.forEach(track => {
-            if (next_track.votes < track.votes && track.played == false) {
+            if (next_track.votes <= track.votes && track.played == false) {
                next_track = track
             }
          })
