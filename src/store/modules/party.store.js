@@ -261,6 +261,7 @@ export default {
          } else {
             track = getters.next_track
             await dispatch('uploadCurrentlyPlaying', track)
+            await dispatch('uploadPartyMode', state.party_mode.mode)
          }
          return track
       },

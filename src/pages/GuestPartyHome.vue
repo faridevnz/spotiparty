@@ -24,7 +24,7 @@ export default {
          if (newValue.currently_playing != oldValue.currently_playing) {
             this.updateLocalCurrentlyPlaying(newValue.currently_playing)
          }
-         if (newValue.party_mode.mode != oldValue.party_mode.mode) {
+         if (newValue.party_mode.battle_songs != oldValue.party_mode.battle_songs) {
             this.updateLocalPartyMode(newValue.party_mode)
          }
       },
@@ -37,16 +37,29 @@ export default {
          'getPartyPlaylist',
          'updateLocalVotes',
          'updateLocalCurrentlyPlaying',
-         'updateLocalPlaybackState'
+         'updateLocalPlaybackState',
+         'updateLocalPartyMode'
       ]),
-      getPlaylist() {
+      async getPlaylist() {
          //TODO vedere se c'è un modo migliore per fare la cosa
          if (this.firebase_party == null) {
             setTimeout(() => {
                this.getPlaylist()
             }, 3000)
          } else {
-            this.getPartyPlaylist()
+            await this.getPartyPlaylist()
+            await this.getVotes()
+         }
+      },
+      getVotes() {
+         if (this.party_playlist.tracks.length == 0) {
+            console.log(this.party_playlist.tracks)
+            setTimeout(() => {
+               this.getVotes()
+            }, 1000)
+         } else {
+            console.log('First update of played')
+            this.updateLocalVotes(this.firebase_votes)
          }
       }
    },

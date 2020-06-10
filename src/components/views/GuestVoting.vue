@@ -12,8 +12,18 @@
          </div>
       </div>
       <div v-if="party_mode.mode == 'battle'">
-         <!-- <Track :track="first_battle_track" />
-         <Track :track="second_battle_track" /> -->
+         <Song
+            v-if="first_battle_track"
+            :track="first_battle_track"
+            @click="voteSong"
+            :class="{ selected: first_battle_track.id == voted_song_id }"
+         />
+         <Song
+            v-if="second_battle_track"
+            :track="second_battle_track"
+            @click="voteSong"
+            :class="{ selected: second_battle_track.id == voted_song_id }"
+         />
       </div>
    </div>
 </template>
@@ -26,21 +36,21 @@ export default {
    components: {
       Song
    },
-   data() {
-      return {
-         first_battle_track: this.party_playlist.tracks.find(
+   computed: {
+      ...mapState('party', ['party_playlist', 'voted_song_id', 'party_mode', 'firebase_votes']),
+      first_battle_track() {
+         return this.party_playlist.tracks.find(
             track => track.id == this.party_mode.battle_songs[0]
-         ),
-         second_battle_track: this.party_playlist.tracks.find(
+         )
+      },
+      second_battle_track() {
+         return this.party_playlist.tracks.find(
             track => track.id == this.party_mode.battle_songs[1]
          )
       }
    },
-   computed: {
-      ...mapState('party', ['party_playlist', 'voted_song_id', 'party_mode'])
-   },
    methods: {
-      ...mapActions('party', ['uploadFirebaseVote']),
+      ...mapActions('party', ['uploadFirebaseVote', 'updateLocalVotes']),
       voteSong(track_id) {
          this.uploadFirebaseVote(track_id)
       }

@@ -23,10 +23,13 @@ export default {
             .catch(err => {
                throw new Error(`Problem handling something: ${err}.`)
             })
+      },
+      firebase_votes(oldVal, newVal) {
+         this.updateLocalVotes(newVal)
       }
    },
    computed: {
-      ...mapState('party', ['firebase_party'])
+      ...mapState('party', ['firebase_party', 'firebase_votes'])
    },
    methods: {
       ...mapActions('party', ['guestSpotifyLogin']),

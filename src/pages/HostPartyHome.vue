@@ -24,7 +24,7 @@ export default {
          if (newValue.currently_playing != oldValue.currently_playing) {
             this.updateLocalCurrentlyPlaying(newValue.currently_playing)
          }
-         if (newValue.party_mode.mode != oldValue.party_mode.mode) {
+         if (newValue.party_mode.battle_songs != oldValue.party_mode.battle_songs) {
             this.updateLocalPartyMode(newValue.party_mode)
          }
       },
