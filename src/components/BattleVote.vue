@@ -3,7 +3,7 @@
       <img class="img" :src="track.images[0].url" />
       <div class="vote">
          <p>voti</p>
-         <p class="text-vote">1</p>
+         <p class="text-vote">{{ track.votes }}</p>
       </div>
       <div class="name-song">{{ track.name }} - {{ track.artists[0].name }}</div>
    </div>
@@ -18,7 +18,9 @@ export default {
       }
    },
    methods: {
-      click() {}
+      click() {
+         this.$emit('click', this.track.id)
+      }
    }
 }
 </script>
@@ -27,46 +29,38 @@ export default {
 @import '@/assets/variables.scss'
 
 .vote-element
-   background-color: rgba(0,0,0,0.2)
+   background-color: #2F2F2F
    border-radius: 25px
+   border: 1px solid #1F1F1F
    box-sizing: border-box
-   display: grid;
-   grid-template-columns: 60% 40%
-   grid-template-rows: 75% 25%
+   display: grid
+   grid-template: "img votes" 75% "song-title song-title" 25% / 0.6fr 0.4fr
    height: 100%
-   margin: 10px 0
+   padding: 30px
    width: 100%
 .img
-   height: 80%
-   margin-left: 30px
-   margin-top: 30px
-   width: 80%
+   grid-area: img
+   height: 100%
 .vote
    align-items: center
-   color: #ffffff
+   color: white
    display: flex
    flex-direction: column
    font-size: 24px
-   grid-column: 2
-   grid-row: 1
+   grid-area: votes
    justify-content: center
-   margin: 0;
-   padding-top: 10px
+   justify-content: center
 .vote > p
-   margin-bottom: 5px
+   margin: 5px
 .name-song
    align-self: center
-   color: #ffffff
+   color: white
    font-size: 18px
-   grid-column-end: 3
-   grid-column-start: 1
-   grid-row: 2
+   grid-area: song-title
    justify-self: flex-start
-   margin-bottom: 10px
-   padding-left: 20px
-   padding-right: 20px
-   text-align: start
+   overflow: scroll
+   align-self: end
 .text-vote
-   color: #00BA61
+   color: map-get($colors, "primary")
    margin-top: 0
 </style>
