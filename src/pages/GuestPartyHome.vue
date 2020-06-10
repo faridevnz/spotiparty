@@ -14,10 +14,31 @@ export default {
       GuestTabBar
    },
    computed: {
-      ...mapState('party', ['firebase_party', 'firebase_votes'])
+      ...mapState('party', ['party_playlist', 'firebase_party', 'firebase_votes'])
+   },
+   watch: {
+      firebase_party(newValue, oldValue) {
+         if (newValue.playback_state != oldValue.playback_state) {
+            this.updateLocalPlaybackState(newValue.playback_state)
+         }
+         if (newValue.currently_playing != oldValue.currently_playing) {
+            this.updateLocalCurrentlyPlaying(newValue.currently_playing)
+         }
+         if (newValue.party_mode.mode != oldValue.party_mode.mode) {
+            this.updateLocalPartyMode(newValue.party_mode)
+         }
+      },
+      firebase_votes(newVal) {
+         this.updateLocalVotes(newVal)
+      }
    },
    methods: {
-      ...mapActions('party', ['getPartyPlaylist', 'updateLocalVotes']),
+      ...mapActions('party', [
+         'getPartyPlaylist',
+         'updateLocalVotes',
+         'updateLocalCurrentlyPlaying',
+         'updateLocalPlaybackState'
+      ]),
       getPlaylist() {
          //TODO vedere se c'è un modo migliore per fare la cosa
          if (this.firebase_party == null) {

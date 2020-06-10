@@ -21,7 +21,12 @@ export default {
       playback_state: null,
       //Information on votes
       voted_song_id: null,
-      firebase_votes: null
+      firebase_votes: null,
+      //information on party mode
+      party_mode: {
+         mode: 'democracy',
+         battle_songs: []
+      }
    },
    mutations: {
       ...vuexfireMutations,
@@ -52,6 +57,10 @@ export default {
       },
       UPDATE_CURRENTLY_PLAYING(state, track) {
          state.currently_playing = track
+      },
+      UPDATE_PARTY_MODE(state, party_mode) {
+         state.party_mode.mode = party_mode.mode
+         state.party_mode.battle_songs = party_mode.battle_songs
       }
    },
    actions: {
@@ -105,6 +114,7 @@ export default {
                votes: db.collection('votes').doc(state.party_code),
                playlist_id: state.party_playlist.id,
                playback_state: false,
+               party_mode: { mode: 'democracy', battle_songs: [] },
                currently_playing: {}
             })
       }),
@@ -304,7 +314,40 @@ export default {
       bindFirebaseVotes: firestoreAction(async ({ bindFirestoreRef, state }) => {
          // return the promise returned by `bindFirestoreRef`
          return bindFirestoreRef('firebase_votes', db.collection('votes').doc(state.party_code))
-      })
+      }),
+      /*
+
+
+
+         PART MODE MANAGMENT
+
+      */
+      updateLocalPartyMode({ commit }, party_mode) {
+         commit('UPDATE_PARTY_MODE', party_mode)
+      },
+      async uploadPartyMode({ getters, state }, party_mode) {
+         if (party_mode == 'battle') {
+            await db
+               .collection('party')
+               .doc(state.party_code)
+               .update({
+                  party_mode: {
+                     mode: party_mode,
+                     battle_songs: getters.random_pair_of_ids
+                  }
+               })
+         } else {
+            await db
+               .collection('party')
+               .doc(state.party_code)
+               .update({
+                  party_mode: {
+                     mode: party_mode,
+                     battle_songs: []
+                  }
+               })
+         }
+      }
    },
    getters: {
       logged_in: state => !!state.party_code,
@@ -319,6 +362,15 @@ export default {
             }
          })
          return next_track
+      },
+      random_pair_of_ids(state) {
+         const tracks = state.party_playlist.tracks.filter(track => track.played == false)
+         const first_random_track = tracks[Math.floor(Math.random() * tracks.length)]
+         let second_random_track = tracks[Math.floor(Math.random() * tracks.length)]
+         while (first_random_track == second_random_track) {
+            second_random_track = tracks[Math.floor(Math.random() * tracks.length)]
+         }
+         return [first_random_track.id, second_random_track.id]
       }
    }
 }

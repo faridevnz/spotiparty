@@ -24,6 +24,9 @@ export default {
          if (newValue.currently_playing != oldValue.currently_playing) {
             this.updateLocalCurrentlyPlaying(newValue.currently_playing)
          }
+         if (newValue.party_mode.mode != oldValue.party_mode.mode) {
+            this.updateLocalPartyMode(newValue.party_mode)
+         }
       },
       firebase_votes(newVal) {
          this.updateLocalVotes(newVal)
@@ -33,7 +36,8 @@ export default {
       ...mapActions('party', [
          'updateLocalPlaybackState',
          'updateLocalCurrentlyPlaying',
-         'updateLocalVotes'
+         'updateLocalVotes',
+         'updateLocalPartyMode'
       ])
    },
    created() {
