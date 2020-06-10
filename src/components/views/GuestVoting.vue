@@ -1,13 +1,19 @@
 <template>
    <div class="guest-voting">
       <div class="title">Vota la prossima canzone</div>
-      <div v-for="track in party_playlist.tracks" :key="track.id" class="song">
-         <Song
-            :track="track"
-            @click="voteSong"
-            :class="{ selected: track.id == voted_song_id }"
-            v-if="!track.played"
-         />
+      <div v-if="party_mode.mode == 'democracy'">
+         <div v-for="track in party_playlist.tracks" :key="track.id" class="song">
+            <Song
+               :track="track"
+               @click="voteSong"
+               :class="{ selected: track.id == voted_song_id }"
+               v-if="!track.played"
+            />
+         </div>
+      </div>
+      <div v-if="party_mode.mode == 'battle'">
+         <!-- <Track :track="first_battle_track" />
+         <Track :track="second_battle_track" /> -->
       </div>
    </div>
 </template>
@@ -20,8 +26,18 @@ export default {
    components: {
       Song
    },
+   data() {
+      return {
+         first_battle_track: this.party_playlist.tracks.find(
+            track => track.id == this.party_mode.battle_songs[0]
+         ),
+         second_battle_track: this.party_playlist.tracks.find(
+            track => track.id == this.party_mode.battle_songs[1]
+         )
+      }
+   },
    computed: {
-      ...mapState('party', ['party_playlist', 'voted_song_id'])
+      ...mapState('party', ['party_playlist', 'voted_song_id', 'party_mode'])
    },
    methods: {
       ...mapActions('party', ['uploadFirebaseVote']),
