@@ -1,6 +1,7 @@
 <template>
    <div class="host-voting">
-      <div class="title">Vota la prossima canzone</div>
+      <div v-if="party_mode.mode == 'democracy'" class="title">Democrazia sia</div>
+      <div v-else class="title">Cominci la battaglia!</div>
       <div v-if="party_mode.mode == 'democracy'">
          <div v-for="track in party_playlist.tracks" :key="track.id" class="song">
             <Song
@@ -11,19 +12,24 @@
             />
          </div>
       </div>
-      <div v-if="party_mode.mode == 'battle'">
-         <Song
-            v-if="first_battle_track"
-            :track="first_battle_track"
-            @click="voteSong"
-            :class="{ selected: first_battle_track.id == voted_song_id }"
-         />
-         <Song
-            v-if="second_battle_track"
-            :track="second_battle_track"
-            @click="voteSong"
-            :class="{ selected: second_battle_track.id == voted_song_id }"
-         />
+      <div v-if="party_mode.mode == 'battle'" class="battle-mode">
+         <div class="battle-card">
+            <BattleVote
+               v-if="first_battle_track"
+               :track="first_battle_track"
+               @click="voteSong"
+               :class="{ selected: first_battle_track.id == voted_song_id }"
+            />
+         </div>
+         <div class="vs">VS</div>
+         <div class="battle-card">
+            <BattleVote
+               v-if="second_battle_track"
+               :track="second_battle_track"
+               @click="voteSong"
+               :class="{ selected: second_battle_track.id == voted_song_id }"
+            />
+         </div>
       </div>
    </div>
 </template>
@@ -31,10 +37,12 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Song from '@/components/Song.vue'
+import BattleVote from '@/components/BattleVote.vue'
 
 export default {
    components: {
-      Song
+      Song,
+      BattleVote
    },
    computed: {
       ...mapState('party', ['party_playlist', 'voted_song_id', 'party_mode']),
@@ -68,13 +76,27 @@ export default {
 <style lang="sass" scoped>
 @import '@/assets/variables.scss'
 .host-voting
-   align-items: flex-start
+   align-items: center
    background-color: map-get($colors, "background")
    display: flex
    flex-direction: column
    justify-content: flex-start
    padding: 15px
    width: 100%
+   .battle-mode
+      height: 100%
+      overflow: hidden
+      width: 100%
+      .battle-card
+         height: calc(50% - 30px)
+      .vs
+         background-color: map-get($colors, "primary")
+         border-radius: 10px
+         height: 30px
+         display: flex
+         align-items: center
+         justify-content: center
+         margin: 10px 0px
 .title
    color: white
    font-size: 24px

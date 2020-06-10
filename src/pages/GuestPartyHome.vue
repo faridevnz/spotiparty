@@ -78,6 +78,7 @@ export default {
    bottom: 0
 .tab
    box-sizing: border-box
+   height: calc(100% - 72px)
    margin: 0px 0px 72px 0px
    width: 100%
 </style>
