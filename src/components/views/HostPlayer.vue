@@ -97,7 +97,8 @@ export default {
             await PlayerApi.play(this.party_playlist.uri, track.uri, this.active_device)
             this.timer = setTimeout(() => {
                this.automaticNext()
-            }, track.duration)
+            }, track.duration_ms)
+            console.log(`Playing next track after ${track.duration_ms} ms`)
             await PlayerApi.deactivateShuffle()
             await this.partyPlay()
          } else {
@@ -112,12 +113,17 @@ export default {
          await PlayerApi.play(this.party_playlist.uri, track.uri, this.active_device)
          this.timer = setTimeout(() => {
             this.automaticNext()
-         }, track.duration)
+         }, track.duration_ms)
+         console.log(`Playing next track after ${track.duration_ms} ms`)
       },
       async automaticNext() {
          const track = await this.nextTrack()
          console.log(`next track: ${track.name}`)
          await PlayerApi.play(this.party_playlist.uri, track.uri, this.active_device)
+         this.timer = setTimeout(() => {
+            this.automaticNext()
+         }, track.duration_ms)
+         console.log(`Playing next track after ${track.duration_ms} ms`)
       },
       async getDevices() {
          await PlayerApi.getUserDevices().then(res => {
