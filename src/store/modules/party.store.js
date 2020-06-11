@@ -381,6 +381,7 @@ export default {
          const tracks = state.party_playlist.tracks.filter(track => track.played == false)
          const first_random_track = tracks[Math.floor(Math.random() * tracks.length)]
          let second_random_track = tracks[Math.floor(Math.random() * tracks.length)]
+         //TODO evitare loop infinito quando c'è una sola canzone da riprodurre
          while (first_random_track == second_random_track) {
             second_random_track = tracks[Math.floor(Math.random() * tracks.length)]
          }

@@ -5,7 +5,12 @@
          <BaseButton :width="220">Cambia playlist</BaseButton>
       </router-link>
       <p>Modalità party</p>
-      <BaseSwitch :width="300" :options="this.party_modes" @selected="changePartyMode" />
+      <BaseSwitch
+         :width="300"
+         :options="this.party_modes"
+         @selected="changePartyMode"
+         :selected="selected_mode"
+      />
       <p>Voti necessari</p>
       <BaseInput
          placeholder="N° voti"
@@ -17,12 +22,22 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 export default {
    data() {
       return {
          party_modes: ['democrazia', 'battaglia'],
          threshold: 0
+      }
+   },
+   computed: {
+      ...mapState('party', ['party_mode']),
+      selected_mode() {
+         if (this.party_mode.mode == 'battle') {
+            return 1
+         } else {
+            return 0
+         }
       }
    },
    methods: {

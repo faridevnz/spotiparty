@@ -32,7 +32,7 @@ export default {
          default: 'Placeholder'
       },
       value: {
-         type: String,
+         type: null,
          default: ''
       },
       error: {

@@ -40,7 +40,7 @@
                   class="device"
                   v-for="device in this.user_devices"
                   :key="device.id"
-                  :class="[device.is_active ? 'green' : '']"
+                  :class="{ green: device.is_active }"
                   @click="selectDevice(device.id)"
                >
                   {{ device.name }}
@@ -57,20 +57,17 @@
 </template>
 
 <script>
-import PlayerApi from '@/api/modules/player.api.js'
 import { mapActions, mapState } from 'vuex'
 
 export default {
    data() {
       return {
-         user_devices: [],
-         active_device: null,
-         show_devices_popup: false,
-         timer: null
+         show_devices_popup: false
       }
    },
    computed: {
       ...mapState('party', ['party_playlist', 'currently_playing', 'playback_state']),
+      ...mapState('player', ['user_devices']),
       imageUrl() {
          return this.track.images[0].url
       },
@@ -87,83 +84,30 @@ export default {
    methods: {
       ...mapActions('user', ['setToken']),
       ...mapActions('party', ['partyPlay', 'partyPause', 'nextTrack']),
-      async pause() {
-         await this.partyPause()
-         await PlayerApi.pause()
-      },
-      async play() {
-         if (this.currently_playing == null) {
-            const track = await this.nextTrack()
-            await PlayerApi.play(this.party_playlist.uri, track.uri, this.active_device)
-            this.timer = setTimeout(() => {
-               this.automaticNext()
-            }, track.duration_ms)
-            console.log(`Playing next track after ${track.duration_ms} ms`)
-            await PlayerApi.deactivateShuffle()
-            await this.partyPlay()
-         } else {
-            await PlayerApi.resume()
-            await this.partyPlay()
-         }
-      },
-      async next() {
-         clearTimeout(this.timer)
-         const track = await this.nextTrack()
-         console.log(`next track: ${track.name}`)
-         await PlayerApi.play(this.party_playlist.uri, track.uri, this.active_device)
-         this.timer = setTimeout(() => {
-            this.automaticNext()
-         }, track.duration_ms)
-         console.log(`Playing next track after ${track.duration_ms} ms`)
-      },
-      async automaticNext() {
-         const track = await this.nextTrack()
-         console.log(`next track: ${track.name}`)
-         await PlayerApi.play(this.party_playlist.uri, track.uri, this.active_device)
-         this.timer = setTimeout(() => {
-            this.automaticNext()
-         }, track.duration_ms)
-         console.log(`Playing next track after ${track.duration_ms} ms`)
-      },
-      async getDevices() {
-         await PlayerApi.getUserDevices().then(res => {
-            this.user_devices = []
-            res.data.devices.forEach(device => {
-               this.user_devices.push(device)
-            })
-            if (!this.active_device) {
-               const older_device = this.user_devices[this.user_devices.length - 1]
-               this.active_device = older_device.id
-               this.setDevice(older_device.id)
-            }
-         })
-      },
-      async setDevice(device) {
-         await PlayerApi.switchDevice(device)
-      },
+      ...mapActions('player', [
+         'getDevices',
+         'getState',
+         'setDevice',
+         'setActiveDevice',
+         'play',
+         'pause',
+         'next'
+      ]),
       clickDevices() {
          this.getDevices()
          this.show_devices_popup = !this.show_devices_popup
       },
       selectDevice(device_id) {
-         this.active_device = device_id
-         this.setDevice(device_id)
+         console.log({ device_id })
+         this.setActiveDevice(device_id)
          this.clickDevices()
-      },
-      // metodo che prende lo stato attuale di riproduzione
-      async getState() {
-         await PlayerApi.getState().then(response => {
-            if (response.data.state) {
-               this.partyPlay()
-            } else {
-               this.partyPause()
-            }
-         })
       }
    },
    async created() {
-      await this.getDevices()
-      await this.getState()
+      if (this.user_devices.length == 0) {
+         await this.getDevices()
+         await this.getState()
+      }
    }
 }
 </script>
@@ -217,10 +161,10 @@ export default {
             display: flex
             height: 40px
             justify-content: flex-start
-            .green
-               color: map-get($colors, 'primary')
-      .device-icon
-         cursor: pointer
+.green
+   color: map-get($colors, 'primary')
+.device-icon
+   cursor: pointer
 div
    color: white
    h2
