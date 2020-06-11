@@ -26,7 +26,10 @@ export default {
       party_mode: {
          mode: 'democracy',
          battle_songs: []
-      }
+      },
+      //threshold
+      threshold: 0,
+      voters: 0
    },
    mutations: {
       ...vuexfireMutations,
@@ -61,6 +64,9 @@ export default {
       UPDATE_PARTY_MODE(state, party_mode) {
          state.party_mode.mode = party_mode.mode
          state.party_mode.battle_songs = party_mode.battle_songs
+      },
+      SET_THRESHOLD(state, threshold) {
+         state.threshold = threshold
       }
    },
    actions: {
@@ -316,6 +322,9 @@ export default {
          // return the promise returned by `bindFirestoreRef`
          return bindFirestoreRef('firebase_votes', db.collection('votes').doc(state.party_code))
       }),
+      setThreshold({ commit }, threshold) {
+         commit('SET_THRESHOLD', threshold)
+      },
       /*
 
 
@@ -358,7 +367,11 @@ export default {
       next_track(state) {
          let next_track = state.party_playlist.tracks[0]
          state.party_playlist.tracks.forEach(track => {
-            if (next_track.votes <= track.votes && track.played == false) {
+            if (
+               next_track.votes <= track.votes &&
+               track.played == false &&
+               track.votes >= state.threshold
+            ) {
                next_track = track
             }
          })

@@ -1,11 +1,18 @@
 <template>
    <div class="settings">
-      <p>playlist corrente :</p>
+      <p>Playlist corrente :</p>
       <router-link :to="{ name: 'SelectPlaylist' }">
          <BaseButton :width="220">Cambia playlist</BaseButton>
       </router-link>
-      <p>modalità party</p>
+      <p>Modalità party</p>
       <BaseSwitch :width="300" :options="this.party_modes" @selected="changePartyMode" />
+      <p>Voti necessari</p>
+      <BaseInput
+         placeholder="N° voti"
+         type="number"
+         v-model.number="threshold"
+         @blur="updateThreshold"
+      />
    </div>
 </template>
 
@@ -14,17 +21,21 @@ import { mapActions } from 'vuex'
 export default {
    data() {
       return {
-         party_modes: ['democrazia', 'battaglia']
+         party_modes: ['democrazia', 'battaglia'],
+         threshold: 0
       }
    },
    methods: {
-      ...mapActions('party', ['uploadPartyMode']),
+      ...mapActions('party', ['uploadPartyMode', 'setThreshold']),
       changePartyMode(index) {
          if (index == 0) {
             this.uploadPartyMode('democracy')
          } else {
             this.uploadPartyMode('battle')
          }
+      },
+      updateThreshold() {
+         this.setThreshold(this.threshold)
       }
    }
 }
@@ -43,7 +54,7 @@ export default {
    padding: 0 30px 0 30px
    > p
       color: white
-      font-size: 18px
+      font-size: 22px
       margin: 30px 0 15px 0
    > .playlist-name
       font-size: 24px
