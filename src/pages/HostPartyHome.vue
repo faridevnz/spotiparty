@@ -1,7 +1,7 @@
 <template>
-   <div class="host-party-home fullscreen">
-      <router-view></router-view>
-      <HostTabBar class="tab" />
+   <div class="fullscreen">
+      <router-view class="tab"></router-view>
+      <HostTabBar class="tab-bar" />
    </div>
 </template>
 
@@ -24,6 +24,9 @@ export default {
          if (newValue.currently_playing != oldValue.currently_playing) {
             this.updateLocalCurrentlyPlaying(newValue.currently_playing)
          }
+         if (newValue.party_mode.battle_songs != oldValue.party_mode.battle_songs) {
+            this.updateLocalPartyMode(newValue.party_mode)
+         }
       },
       firebase_votes(newVal) {
          this.updateLocalVotes(newVal)
@@ -33,7 +36,8 @@ export default {
       ...mapActions('party', [
          'updateLocalPlaybackState',
          'updateLocalCurrentlyPlaying',
-         'updateLocalVotes'
+         'updateLocalVotes',
+         'updateLocalPartyMode'
       ])
    },
    created() {
@@ -45,13 +49,12 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.host-party-home
-   align-items: space-between
-   color: white
-   display: flex
-   flex-direction: column
-   justify-content: flex-start
-   .tab
-      position: fixed
-      bottom: 0px
+.tab-bar
+   bottom: 0px
+   position: fixed
+.tab
+   box-sizing: border-box
+   height: calc(100% - 72px)
+   margin: 0px 0px 72px 0px
+   width: 100%
 </style>

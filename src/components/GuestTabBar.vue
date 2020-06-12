@@ -1,6 +1,6 @@
 <template>
    <div class="tab-bar">
-      <router-link v-if="!guest_has_own_account" :to="{ name: 'GuestRequireAccess' }">
+      <router-link v-if="!guest_personal_account" :to="{ name: 'GuestRequireAccess' }">
          <div
             :class="{
                active: current_route_name == 'GuestRequireAccess',
@@ -62,16 +62,16 @@
    </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
    data() {
       return {
-         current_route_name: 'GuestRequireAccess'
+         current_route_name: 'GuestVoting'
       }
    },
    computed: {
-      ...mapGetters('party', ['guest_has_own_account'])
+      ...mapState('user', ['guest_personal_account'])
    },
    watch: {
       $route(to) {
@@ -84,22 +84,22 @@ export default {
 <style lang="sass" scoped>
 @import '@/assets/variables.scss'
 .tab-bar
-   background-color: map-get($colors, 'tab-bar')
-   display: flex
-   flex-direction: row
-   justify-content: space-evenly
    align-items: center
-   width: 100%
-   height: 72px
-   border-width: 1px 0px 0px 0px
+   background-color: map-get($colors, 'tab-bar')
    border-color: #545454
    border-style: solid
+   border-width: 1px 0px 0px 0px
+   display: flex
+   flex-direction: row
+   height: 72px
+   justify-content: space-evenly
+   width: 100%
    .tab-element
+      align-items: center
       display: flex
       flex-direction: column
-      align-items: center
-      width: 100px
       margin: 1px
+      width: 100px
    .title
          color: inherit
          display: flex

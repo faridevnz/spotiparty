@@ -4,7 +4,8 @@ export default {
    namespaced: true,
    state: {
       access_token: null,
-      user: null
+      user: null,
+      guest_personal_account: false
    },
    mutations: {
       SET_ACCESS_TOKEN(state, token) {
@@ -12,6 +13,9 @@ export default {
       },
       SET_USER_INFO(state, user) {
          state.user = user
+      },
+      SET_GUEST_PERSONAL_ACCOUNT(state) {
+         state.guest_personal_account = true
       }
    },
    actions: {

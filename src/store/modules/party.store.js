@@ -21,12 +21,21 @@ export default {
       playback_state: null,
       //Information on votes
       voted_song_id: null,
-      firebase_votes: null
+      firebase_votes: null,
+      //information on party mode
+      party_mode: {
+         mode: 'democracy',
+         battle_songs: []
+      },
+      //threshold
+      threshold: 0,
+      voters: 0
    },
    mutations: {
       ...vuexfireMutations,
       ADD_PARTY_CODE(state, party_code) {
          state.party_code = party_code
+         localStorage.setItem('party_code', party_code)
       },
       ADD_PLAYLIST_TRACKS(state, tracks) {
          state.party_playlist.tracks = [...tracks]
@@ -41,6 +50,7 @@ export default {
       UPDATE_SONG_VOTES(state, song_votes) {
          const track = state.party_playlist.tracks.find(track => track.id == song_votes.track_id)
          track.votes = song_votes.votes
+         track.played = song_votes.played
       },
       VOTE_A_SONG(state, track_id) {
          state.voted_song_id = track_id
@@ -50,6 +60,13 @@ export default {
       },
       UPDATE_CURRENTLY_PLAYING(state, track) {
          state.currently_playing = track
+      },
+      UPDATE_PARTY_MODE(state, party_mode) {
+         state.party_mode.mode = party_mode.mode
+         state.party_mode.battle_songs = party_mode.battle_songs
+      },
+      SET_THRESHOLD(state, threshold) {
+         state.threshold = threshold
       }
    },
    actions: {
@@ -103,6 +120,7 @@ export default {
                votes: db.collection('votes').doc(state.party_code),
                playlist_id: state.party_playlist.id,
                playback_state: false,
+               party_mode: { mode: 'democracy', battle_songs: [] },
                currently_playing: {}
             })
       }),
@@ -169,6 +187,18 @@ export default {
       /*
 
 
+         GUEST SPOTIFY LOGIN
+
+      */
+      async guestSpotifyLogin({ dispatch, commit }) {
+         const party_code = localStorage.getItem('party_code')
+         await dispatch('joinParty', party_code)
+         commit('user/SET_GUEST_PERSONAL_ACCOUNT', null, { root: true })
+         return party_code
+      },
+      /*
+
+
 
          PARTY PLAYLIST MANAGEMENT
 
@@ -193,7 +223,8 @@ export default {
          track_ids.forEach(track_id => {
             const song_votes = {
                track_id: track_id,
-               votes: 0
+               votes: 0,
+               played: false
             }
             songs_votes.push(song_votes)
          })
@@ -236,16 +267,26 @@ export default {
          } else {
             track = getters.next_track
             await dispatch('uploadCurrentlyPlaying', track)
+            await dispatch('uploadPartyMode', state.party_mode.mode)
          }
          return track
       },
       uploadCurrentlyPlaying: firestoreAction(async ({ state }, track) => {
          console.log(`Uploading next track: ${track.name}`)
-         return await db
+         await db
             .collection('party')
             .doc(state.party_code)
             .update({
                currently_playing: track
+            })
+         let new_songs_votes = JSON.parse(JSON.stringify(state.firebase_votes.songs_votes))
+         let played_track = new_songs_votes.find(song_votes => song_votes.track_id == track.id)
+         played_track.played = true
+         return await db
+            .collection('votes')
+            .doc(state.party_code)
+            .update({
+               songs_votes: new_songs_votes
             })
       }),
       async updateLocalCurrentlyPlaying({ commit }, track) {
@@ -280,24 +321,71 @@ export default {
       bindFirebaseVotes: firestoreAction(async ({ bindFirestoreRef, state }) => {
          // return the promise returned by `bindFirestoreRef`
          return bindFirestoreRef('firebase_votes', db.collection('votes').doc(state.party_code))
-      })
+      }),
+      setThreshold({ commit }, threshold) {
+         commit('SET_THRESHOLD', threshold)
+      },
+      /*
+
+
+
+         PART MODE MANAGMENT
+
+      */
+      updateLocalPartyMode({ commit }, party_mode) {
+         commit('UPDATE_PARTY_MODE', party_mode)
+      },
+      async uploadPartyMode({ getters, state }, party_mode) {
+         if (party_mode == 'battle') {
+            await db
+               .collection('party')
+               .doc(state.party_code)
+               .update({
+                  party_mode: {
+                     mode: party_mode,
+                     battle_songs: getters.random_pair_of_ids
+                  }
+               })
+         } else {
+            await db
+               .collection('party')
+               .doc(state.party_code)
+               .update({
+                  party_mode: {
+                     mode: party_mode,
+                     battle_songs: []
+                  }
+               })
+         }
+      }
    },
    getters: {
       logged_in: state => !!state.party_code,
       tracks_ids(state) {
          return state.party_playlist.tracks.map(track => track.id)
       },
-      guest_has_own_account(state, getters, rootState) {
-         return state.firebase_party.spotify_token != rootState.user.access_token
-      },
       next_track(state) {
          let next_track = state.party_playlist.tracks[0]
          state.party_playlist.tracks.forEach(track => {
-            if (next_track.votes < track.votes && track.played == false) {
+            if (
+               next_track.votes <= track.votes &&
+               track.played == false &&
+               track.votes >= state.threshold
+            ) {
                next_track = track
             }
          })
          return next_track
+      },
+      random_pair_of_ids(state) {
+         const tracks = state.party_playlist.tracks.filter(track => track.played == false)
+         const first_random_track = tracks[Math.floor(Math.random() * tracks.length)]
+         let second_random_track = tracks[Math.floor(Math.random() * tracks.length)]
+         //TODO evitare loop infinito quando c'è una sola canzone da riprodurre
+         while (first_random_track == second_random_track) {
+            second_random_track = tracks[Math.floor(Math.random() * tracks.length)]
+         }
+         return [first_random_track.id, second_random_track.id]
       }
    }
 }

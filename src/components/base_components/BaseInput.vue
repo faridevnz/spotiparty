@@ -32,7 +32,7 @@ export default {
          default: 'Placeholder'
       },
       value: {
-         type: String,
+         type: null,
          default: ''
       },
       error: {
@@ -57,7 +57,7 @@ export default {
       }
    },
    methods: {
-      focusin() {
+      focusin(event) {
          this.$emit('focusin', event)
       },
       updateValue(event) {

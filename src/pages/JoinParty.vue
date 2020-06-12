@@ -49,7 +49,7 @@ export default {
    },
    watch: {
       access_token() {
-         this.$router.push({ name: 'GuestPartyHome' })
+         this.$router.push({ name: 'GuestPartyHome', params: { id: this.party_code } })
       }
    },
    methods: {
@@ -70,7 +70,7 @@ export default {
    },
    created() {
       if (this.party_code != null) {
-         this.$router.push({ name: 'GuestPartyHome' })
+         this.$router.push({ name: 'GuestPartyHome', params: { id: this.party_code } })
       }
    }
 }

@@ -20,6 +20,7 @@ export default {
    },
    methods: {
       click() {
+         console.log(this.track)
          this.$emit('click', this.track.id)
       }
    }
@@ -31,15 +32,15 @@ export default {
 
 .song-element
    background-color: map-get($colors, 'background')
-   display: grid
-   width: inherit
-   height: 92px
-   grid-template-columns: 62px auto
-   column-gap: 10px
-   grid-template-rows: 100%
-   padding: 15px 15px
-   box-sizing: border-box
    border-radius: 10px
+   box-sizing: border-box
+   column-gap: 10px
+   display: grid
+   grid-template-columns: 62px auto
+   grid-template-rows: 100%
+   height: 92px
+   padding: 15px 15px
+   width: 100%
 .img
    grid-row: auto
 .song-name
