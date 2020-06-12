@@ -37,10 +37,12 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import Song from '@/components/Song.vue'
+import BattleVote from '@/components/BattleVote.vue'
 
 export default {
    components: {
-      Song
+      Song,
+      BattleVote
    },
    computed: {
       ...mapState('party', ['party_playlist', 'voted_song_id', 'party_mode', 'firebase_votes']),

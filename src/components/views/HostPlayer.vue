@@ -72,7 +72,7 @@ export default {
          return this.track.images[0].url
       },
       track() {
-         if (this.currently_playing == null) {
+         if (this.currently_playing == null || this.currently_playing.id == undefined) {
             const track = this.party_playlist.tracks[0]
             return track
          } else {
