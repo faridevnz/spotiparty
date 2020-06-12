@@ -57,7 +57,7 @@ export default {
       }
    },
    methods: {
-      focusin() {
+      focusin(event) {
          this.$emit('focusin', event)
       },
       updateValue(event) {
