@@ -58,7 +58,7 @@ export default {
       }
    },
    methods: {
-      ...mapActions('party', ['uploadFirebaseVote', 'updateLocalVotes']),
+      ...mapActions('party', ['uploadFirebaseVote']),
       voteSong(track_id) {
          this.uploadFirebaseVote(track_id)
       }

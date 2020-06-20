@@ -14,22 +14,29 @@ export default {
       GuestTabBar
    },
    computed: {
-      ...mapState('party', ['party_playlist', 'firebase_party', 'firebase_votes'])
+      ...mapState('party', ['party_playlist', 'firebase_party', 'firebase_votes']),
+      ...mapState('user', ['guest_personal_account'])
    },
    watch: {
-      firebase_party(newValue, oldValue) {
+      async firebase_party(newValue, oldValue) {
          if (newValue.playback_state != oldValue.playback_state) {
-            this.updateLocalPlaybackState(newValue.playback_state)
+            await this.updateLocalPlaybackState(newValue.playback_state)
+            if (this.guest_personal_account) {
+               await this.lazyPause(newValue.playback_state)
+            }
          }
          if (newValue.currently_playing != oldValue.currently_playing) {
-            this.updateLocalCurrentlyPlaying(newValue.currently_playing)
+            await this.updateLocalCurrentlyPlaying(newValue.currently_playing)
+            if (this.guest_personal_account) {
+               await this.lazyPlay(newValue.currently_playing)
+            }
          }
          if (newValue.party_mode.battle_songs != oldValue.party_mode.battle_songs) {
-            this.updateLocalPartyMode(newValue.party_mode)
+            await this.updateLocalPartyMode(newValue.party_mode)
          }
       },
-      firebase_votes(newVal) {
-         this.updateLocalVotes(newVal)
+      async firebase_votes(newVal) {
+         await this.updateLocalVotes(newVal)
       }
    },
    methods: {
@@ -40,6 +47,7 @@ export default {
          'updateLocalPlaybackState',
          'updateLocalPartyMode'
       ]),
+      ...mapActions('player', ['lazyPlay', 'lazyPause']),
       async getPlaylist() {
          //TODO vedere se c'è un modo migliore per fare la cosa
          if (this.firebase_party == null) {
@@ -48,26 +56,24 @@ export default {
             }, 3000)
          } else {
             await this.getPartyPlaylist()
-            await this.getVotes()
+            this.getVotes()
          }
       },
-      getVotes() {
+      async getVotes() {
          if (this.party_playlist.tracks.length == 0) {
-            console.log(this.party_playlist.tracks)
             setTimeout(() => {
                this.getVotes()
             }, 1000)
          } else {
-            console.log('First update of played')
-            this.updateLocalVotes(this.firebase_votes)
+            await this.updateLocalVotes(this.firebase_votes)
          }
       }
    },
-   created() {
+   async created() {
       if (this.$router.currentRoute.name != 'GuestVoting') {
          this.$router.push({ name: 'GuestVoting' })
       }
-      this.getPlaylist()
+      await this.getPlaylist()
    }
 }
 </script>
