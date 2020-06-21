@@ -47,7 +47,6 @@ export default {
 .tab-selector
    display: flex
    justify-content: flex-start
-   margin: 24px 0px 20px 0px
    >.tab-element
       color: white
       display: flex

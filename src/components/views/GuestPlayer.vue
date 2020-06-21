@@ -12,16 +12,16 @@
          </div>
       </div>
       <div class="container-controls">
-         <BaseButtonWithIcon v-if="!playback_state" :width="100" :height="100" @click="play">
+         <BaseButtonWithIcon v-if="!muted" :width="100" :height="100" @click="mute">
             <div class="flex">
-               <BaseIcon :width="51" :height="51" viewBox="0 0 51 51">
-                  <Play />
+               <BaseIcon :width="50" :height="50" color="000000">
+                  <Volume />
                </BaseIcon>
             </div>
          </BaseButtonWithIcon>
-         <BaseButtonWithIcon v-else :width="100" :height="100" @click="pause">
-            <BaseIcon :width="51" :height="51" viewBox="0 0 51 51">
-               <Pause />
+         <BaseButtonWithIcon v-else :width="100" :height="100" @click="unmute">
+            <BaseIcon :width="51" :height="51" color="000000">
+               <Mute />
             </BaseIcon>
          </BaseButtonWithIcon>
          <div class="devices">
@@ -30,7 +30,7 @@
                   class="device"
                   v-for="device in this.user_devices"
                   :key="device.id"
-                  :class="[device.is_active ? 'green' : '']"
+                  :class="{ green: device.is_active }"
                   @click="selectDevice(device.id)"
                >
                   {{ device.name }}
@@ -47,24 +47,22 @@
 </template>
 
 <script>
-import PlayerApi from '@/api/modules/player.api.js'
 import { mapActions, mapState } from 'vuex'
 
 export default {
    data() {
       return {
-         user_devices: [],
-         active_device: null,
          show_devices_popup: false
       }
    },
    computed: {
       ...mapState('party', ['party_playlist', 'currently_playing', 'playback_state']),
+      ...mapState('player', ['user_devices', 'muted']),
       imageUrl() {
          return this.track.images[0].url
       },
       track() {
-         if (this.currently_playing == null) {
+         if (this.currently_playing == null || this.currently_playing.id == undefined) {
             const track = this.party_playlist.tracks[0]
             return track
          } else {
@@ -74,62 +72,20 @@ export default {
       }
    },
    methods: {
-      ...mapActions('user', ['setToken']),
-      ...mapActions('party', ['partyPlay', 'partyPause', 'nextTrack']),
-      async pause() {
-         await this.partyPause()
-         await PlayerApi.pause()
-      },
-      async play() {
-         if (this.currently_playing == null) {
-            const track = await this.nextTrack()
-            await PlayerApi.play(this.party_playlist.uri, track.uri, this.active_device)
-            await PlayerApi.deactivateShuffle()
-            await this.partyPlay()
-         } else {
-            await PlayerApi.resume()
-            await this.partyPlay()
-         }
-      },
-      async getDevices() {
-         await PlayerApi.getUserDevices().then(res => {
-            this.user_devices = []
-            res.data.devices.forEach(device => {
-               this.user_devices.push(device)
-            })
-            if (!this.active_device) {
-               const older_device = this.user_devices[this.user_devices.length - 1]
-               this.active_device = older_device.id
-               this.setDevice(older_device.id)
-            }
-         })
-      },
-      async setDevice(device) {
-         await PlayerApi.switchDevice(device)
-      },
+      ...mapActions('player', ['getDevices', 'setDevice', 'setActiveDevice', 'mute', 'unmute']),
       clickDevices() {
          this.getDevices()
          this.show_devices_popup = !this.show_devices_popup
       },
       selectDevice(device_id) {
-         this.active_device = device_id
-         this.setDevice(device_id)
+         this.setActiveDevice(device_id)
          this.clickDevices()
-      },
-      // metodo che prende lo stato attuale di riproduzione
-      async getState() {
-         await PlayerApi.getState().then(response => {
-            if (response.data.state) {
-               this.partyPlay()
-            } else {
-               this.partyPause()
-            }
-         })
       }
    },
    async created() {
-      await this.getDevices()
-      await this.getState()
+      if (this.user_devices.length == 0) {
+         await this.getDevices()
+      }
    }
 }
 </script>

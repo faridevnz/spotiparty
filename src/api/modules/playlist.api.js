@@ -24,7 +24,18 @@ export default {
       tracks.forEach(track => payload.uris.push(track.uri))
       return apiClient.post(`/playlists/${playlist_id}/tracks`, payload)
    },
+   addTrackToPlaylist(track, playlist_id) {
+      const payload = {
+         uris: []
+      }
+      payload.uris.push(track.uri)
+      return apiClient.post(`/playlists/${playlist_id}/tracks`, payload)
+   },
    getPlaylist(playlist_id) {
       return apiClient.get(`/playlists/${playlist_id}`)
+   },
+   deleteTracks(playlist_id, payload) {
+      console.log(payload)
+      return apiClient.delete(`/playlists/${playlist_id}/tracks`, { data: payload })
    }
 }

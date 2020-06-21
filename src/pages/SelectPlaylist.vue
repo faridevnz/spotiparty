@@ -103,7 +103,7 @@ export default {
 @import '@/assets/animations.sass'
 @import '@/assets/variables.scss'
 
-$navigation-height: 141px
+$navigation-height: 122px
 $tab-bar-height: 72px
 
 .select-playlist
@@ -128,7 +128,7 @@ $tab-bar-height: 72px
          font-size: 32px
          font-weight: 600
          justify-content: flex-start
-         margin: 0px
+         margin: 0px 0px 25px 0px
    .playlist-list
       background-color: map-get($colors, "background")
       left: 0px

@@ -56,7 +56,7 @@ export default {
          const party_code = Utils.generatePartyCode()
          await this.createParty(party_code)
          //TODO Only for dev mode, remove for production
-         // this.deleteOldData(party_code)
+         this.deleteOldData(party_code)
       }
    }
 }
