@@ -56,7 +56,7 @@ export default {
          await PlaylistApi.getPlaylistTracks(playlist_id)
             //Add playlists ids to every track
             .then(response => {
-               let tracks = Utils.cleanTracksResponse(response.data.items)
+               let tracks = Utils.cleanTracksFromPlaylistResponse(response.data.items)
                return tracks
             })
             //Add tracks length to every track

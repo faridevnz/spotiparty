@@ -2,15 +2,13 @@
    <div class="guest-voting">
       <div v-if="party_mode.mode == 'democracy'" class="title">Democrazia sia</div>
       <div v-else class="title">Cominci la battaglia!</div>
-      <div v-if="party_mode.mode == 'democracy'">
-         <div v-for="track in party_playlist.tracks" :key="track.id" class="song">
-            <Song
-               :track="track"
-               @click="voteSong"
-               :class="{ selected: track.id == voted_song_id }"
-               v-if="!track.played"
-            />
-         </div>
+      <div v-if="party_mode.mode == 'democracy'" class="battle-mode">
+         <TabSelector
+            :tabs="['Playlist', 'Proposte']"
+            @tabSelected="changeTab"
+            class="tab-switch"
+         />
+         <router-view></router-view>
       </div>
       <div v-if="party_mode.mode == 'battle'" class="battle-mode">
          <div class="battle-card">
@@ -36,16 +34,22 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import Song from '@/components/Song.vue'
 import BattleVote from '@/components/BattleVote.vue'
+import TabSelector from '@/components/TabSelector.vue'
 
 export default {
    components: {
-      Song,
-      BattleVote
+      BattleVote,
+      TabSelector
    },
    computed: {
-      ...mapState('party', ['party_playlist', 'voted_song_id', 'party_mode', 'firebase_votes']),
+      ...mapState('party', [
+         'party_playlist',
+         'voted_song_id',
+         'party_mode',
+         'firebase_votes',
+         'party_code'
+      ]),
       first_battle_track() {
          return this.party_playlist.tracks.find(
             track => track.id == this.party_mode.battle_songs[0]
@@ -61,6 +65,18 @@ export default {
       ...mapActions('party', ['uploadFirebaseVote']),
       voteSong(track_id) {
          this.uploadFirebaseVote(track_id)
+      },
+      changeTab(index) {
+         if (index == 0) {
+            this.$router.push({ name: 'PartyTracks' })
+         } else {
+            this.$router.push({ name: 'ProposedTracks' })
+         }
+      }
+   },
+   created() {
+      if (this.$router.currentRoute.name != 'PartyTracks') {
+         this.$router.push({ name: 'PartyTracks' })
       }
    }
 }
@@ -77,7 +93,7 @@ export default {
    padding: 15px
    .battle-mode
       height: 100%
-      overflow: hidden
+      overflow: scroll
       width: 100%
       .battle-card
          height: calc(50% - 30px)
@@ -96,6 +112,12 @@ export default {
    margin: 0px 0px 20px 0px
 .selected
    filter: brightness(150%)
-.song
+.suggestion
+   align-items: center
+   display: flex
+   justify-content: center
+   padding: 10px
    width: 100%
+.tab-switch
+   padding: 0px 15px
 </style>

@@ -33,8 +33,8 @@
       <router-link :to="{ name: 'GuestVoting' }">
          <div
             :class="{
-               active: current_route_name == 'GuestVoting',
-               inactive: current_route_name != 'GuestVoting',
+               active: isOnGuestVoting,
+               inactive: isOnGuestVoting,
                'tab-element': true
             }"
          >
@@ -77,6 +77,19 @@ export default {
       $route(to) {
          this.current_route_name = to.name
       }
+   },
+   methods: {
+      isOnGuestVoting() {
+         if (
+            this.current_route_name == 'GuestVoting' ||
+            this.current_route_name == 'PartyTracks' ||
+            this.current_route_name == 'ProposedTracks'
+         ) {
+            return true
+         } else {
+            return false
+         }
+      }
    }
 }
 </script>
@@ -101,12 +114,12 @@ export default {
       margin: 1px
       width: 100px
    .title
-         color: inherit
-         display: flex
-         font-size: 12px
-         font-weight: 600
-         justify-content: flex-start
-         margin: 1px
+      color: inherit
+      display: flex
+      font-size: 12px
+      font-weight: 600
+      justify-content: flex-start
+      margin: 1px
 .active
    color: white
    filter: brightness(100%)
