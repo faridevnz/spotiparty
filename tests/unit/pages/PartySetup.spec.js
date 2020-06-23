@@ -61,6 +61,7 @@ const store = new Vuex.Store({
 describe('PartyHome', () => {
    test('is a Vue istance', () => {
       const wrapper = shallowMount(PartySetup, {
+         stubs: ['router-link', 'router-view'],
          localVue,
          store,
          mocks: {
@@ -71,6 +72,7 @@ describe('PartyHome', () => {
    })
    test('gets the token from the route', () => {
       const wrapper = shallowMount(PartySetup, {
+         stubs: ['router-link', 'router-view'],
          localVue,
          store,
          mocks: {
