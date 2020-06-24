@@ -28,7 +28,9 @@
 </br>
 </br>
 </br>
+
 ## Importante
+
 L'applicazione per essere utilizzata richiede un account Spotify Premium. 
 Il layout è stato progettato per il mobile, quindi se si decide di visitare il sito da desktop la scheda di Chrome dovrà assumere le dimensioni di un dispositivo mobile visualizzare correttamente il layout.
 
