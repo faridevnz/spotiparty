@@ -9,7 +9,13 @@
          />
       </div>
       <div class="suggestion">
-         <router-link :to="{ name: 'SearchSong' }">
+         <router-link
+            v-if="this.$router.currentRoute.name == 'GuestPartyTracks'"
+            :to="{ name: 'GuestSearchSong' }"
+         >
+            <BaseButton>Suggerisci</BaseButton>
+         </router-link>
+         <router-link v-else :to="{ name: 'HostSearchSong' }">
             <BaseButton>Suggerisci</BaseButton>
          </router-link>
       </div>

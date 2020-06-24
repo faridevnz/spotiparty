@@ -278,6 +278,16 @@ export default {
       async updateLocalPlaybackState({ commit }, state) {
          commit('UPDATE_PLAYBACK_STATE', state)
       },
+      async uploadResetPlayedState({ state }) {
+         let new_songs_votes = JSON.parse(JSON.stringify(state.firebase_votes.songs_votes))
+         new_songs_votes.forEach(song_votes => {
+            song_votes.played = false
+         })
+         await db
+            .collection('votes')
+            .doc(state.party_code)
+            .update({ songs_votes: new_songs_votes })
+      },
       async nextTrack({ dispatch, getters, commit, state }) {
          let track = {}
          //se non è stata ancora riprodotta nessuna canzone
@@ -285,18 +295,27 @@ export default {
             track = state.party_playlist.tracks[0]
             await dispatch('uploadCurrentlyPlaying', track)
          } else {
+            let are_all_tracks_played = true
+            state.party_playlist.tracks.forEach(track => {
+               if (track.played == false) {
+                  are_all_tracks_played = false
+               }
+            })
+            if (are_all_tracks_played) {
+               await dispatch('uploadResetPlayedState')
+            }
             track = getters.next_track
             await dispatch('uploadCurrentlyPlaying', track)
             //Viene richiamato il party mode perche deve essere fatto l'upload di un nuovo pair di ID se la modalità è battle
             await dispatch('uploadPartyMode', state.party_mode.mode)
             await dispatch('cleanSpotifyPlaylistFromUnplayedProposedTracks')
+            await dispatch('cleanFirebaseProposedTracks')
             //Svuota le track proposte così nuove proposte possono avvenire
             await commit('EMPTY_PROPOSED_TRACKS')
          }
          return track
       },
       uploadCurrentlyPlaying: firestoreAction(async ({ state }, track) => {
-         console.log(`Uploading next track: ${track.name}`)
          await db
             .collection('party')
             .doc(state.party_code)
@@ -324,7 +343,6 @@ export default {
             }
             payload.tracks.push(track_uri)
          })
-         console.log(payload)
          await PlaylistApi.deleteTracks(state.party_playlist.id, payload)
       },
       async updateLocalCurrentlyPlaying({ commit }, track) {
@@ -416,8 +434,11 @@ export default {
          TRACK PROPOSING
 
       */
-      async addTrackToProposed({ dispatch, commit, state }, track) {
-         commit('ADD_TRACK_TO_PROPOSED', track)
+      async addTrackToProposed({ dispatch }, track) {
+         await dispatch('addTrackToFirebaseVotes', track)
+         await dispatch('uploadProposedTrack', track)
+      },
+      async addTrackToProposedAndPlaylist({ dispatch, state }, track) {
          await PlaylistApi.addTrackToPlaylist(track, state.party_playlist.id)
          await dispatch('addTrackToFirebaseVotes', track)
          await dispatch('uploadProposedTrack', track)
@@ -456,8 +477,8 @@ export default {
          let next_track = state.party_playlist.tracks[0]
          state.party_playlist.tracks.forEach(track => {
             if (
-               next_track.votes <= track.votes &&
                track.played == false &&
+               next_track.votes <= track.votes &&
                track.votes >= state.threshold
             ) {
                next_track = track
@@ -467,8 +488,8 @@ export default {
             let proposed_track = state.party_playlist.proposed_tracks[0]
             state.party_playlist.proposed_tracks.forEach(track => {
                if (
-                  proposed_track.votes <= track.votes &&
                   track.played == false &&
+                  proposed_track.votes <= track.votes &&
                   track.votes >= state.threshold
                ) {
                   proposed_track = track
@@ -476,6 +497,18 @@ export default {
             })
             if (proposed_track.votes > next_track.votes) {
                return proposed_track
+            }
+         }
+         if (next_track.id == state.party_playlist.tracks[0].id) {
+            next_track =
+               state.party_playlist.tracks[
+                  Math.floor(Math.random() * state.party_playlist.tracks.length)
+               ]
+            while (next_track.played == true) {
+               next_track =
+                  state.party_playlist.tracks[
+                     Math.floor(Math.random() * state.party_playlist.tracks.length)
+                  ]
             }
          }
          return next_track

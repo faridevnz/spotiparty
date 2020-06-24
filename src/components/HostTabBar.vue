@@ -15,11 +15,11 @@
          </div>
       </router-link>
 
-      <router-link :to="{ name: 'HostVoting' }">
+      <router-link :to="{ name: 'HostPartyTracks' }">
          <div
             :class="{
-               active: current_route_name == 'HostVoting',
-               inactive: current_route_name != 'HostVoting',
+               active: isOnHostVoting,
+               inactive: !isOnHostVoting,
                'tab-element': true
             }"
          >
@@ -56,7 +56,18 @@ export default {
       }
    },
    computed: {
-      ...mapState('party', ['firebase_votes'])
+      ...mapState('party', ['firebase_votes']),
+      isOnHostVoting() {
+         if (
+            this.current_route_name == 'HostVoting' ||
+            this.current_route_name == 'HostPartyTracks' ||
+            this.current_route_name == 'HostProposedTracks'
+         ) {
+            return true
+         } else {
+            return false
+         }
+      }
    },
    watch: {
       $route(to) {

@@ -7,6 +7,8 @@
 
 <script>
 import GuestTabBar from '@/components/GuestTabBar.vue'
+import PlayerApi from '@/api/modules/player.api.js'
+
 import { mapActions, mapState } from 'vuex'
 
 export default {
@@ -22,7 +24,11 @@ export default {
          if (newValue.playback_state != oldValue.playback_state) {
             await this.updateLocalPlaybackState(newValue.playback_state)
             if (this.guest_personal_account) {
-               await this.lazyPause(newValue.playback_state)
+               if (newValue.playback_state == false) {
+                  await PlayerApi.pause()
+               } else {
+                  await PlayerApi.resume()
+               }
             }
          }
          if (newValue.currently_playing != oldValue.currently_playing) {
@@ -38,6 +44,10 @@ export default {
          if (newValue.party_mode.battle_songs != oldValue.party_mode.battle_songs) {
             await this.updateLocalPartyMode(newValue.party_mode)
          }
+         if (newValue.proposed_tracks != oldValue.proposed_tracks) {
+            await this.emptyProposedTracks()
+            await this.updateLocalProposedTracks(newValue.proposed_tracks)
+         }
       },
       async firebase_votes(newVal) {
          await this.updateLocalVotes(newVal)
@@ -50,7 +60,8 @@ export default {
          'updateLocalCurrentlyPlaying',
          'updateLocalPlaybackState',
          'updateLocalPartyMode',
-         'emptyProposedTracks'
+         'emptyProposedTracks',
+         'updateLocalProposedTracks'
       ]),
       ...mapActions('player', ['lazyPlay', 'lazyPause']),
       async getPlaylist() {

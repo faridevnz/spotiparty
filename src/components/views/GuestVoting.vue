@@ -68,15 +68,15 @@ export default {
       },
       changeTab(index) {
          if (index == 0) {
-            this.$router.push({ name: 'PartyTracks' })
+            this.$router.push({ name: 'GuestPartyTracks' })
          } else {
-            this.$router.push({ name: 'ProposedTracks' })
+            this.$router.push({ name: 'GuestProposedTracks' })
          }
       }
    },
    created() {
-      if (this.$router.currentRoute.name != 'PartyTracks') {
-         this.$router.push({ name: 'PartyTracks' })
+      if (this.$router.currentRoute.name != 'GuestPartyTracks') {
+         this.$router.push({ name: 'GuestPartyTracks' })
       }
    }
 }

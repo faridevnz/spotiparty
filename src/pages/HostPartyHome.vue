@@ -7,6 +7,8 @@
 
 <script>
 import HostTabBar from '@/components/HostTabBar.vue'
+import PlaylistApi from '@/api/modules/playlist.api.js'
+
 import { mapState, mapActions } from 'vuex'
 
 export default {
@@ -28,8 +30,18 @@ export default {
             await this.updateLocalPartyMode(newValue.party_mode)
          }
          if (newValue.proposed_tracks != oldValue.proposed_tracks) {
+            newValue.proposed_tracks.forEach(async track => {
+               //controlla se una proposta nuova era già presente in una vecchia
+               const already_existed = oldValue.proposed_tracks.find(
+                  old_track => old_track.id == track.id
+               )
+               //Se la proposta non era presente la aggiunge alla playlist
+               if (already_existed == undefined) {
+                  await PlaylistApi.addTrackToPlaylist(track, this.party_playlist.id)
+               }
+            })
+            await this.emptyProposedTracks()
             await this.updateLocalProposedTracks(newValue.proposed_tracks)
-            await this.cleanFirebaseProposedTracks()
          }
       },
       firebase_votes(newVal) {
@@ -43,7 +55,8 @@ export default {
          'updateLocalVotes',
          'updateLocalPartyMode',
          'updateLocalProposedTracks',
-         'cleanFirebaseProposedTracks'
+         'cleanFirebaseProposedTracks',
+         'emptyProposedTracks'
       ])
    },
    created() {

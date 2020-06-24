@@ -28,13 +28,8 @@ export default {
          result_tracks: []
       }
    },
-   // watch: {
-   //    search_text(oldVal, newVal) {
-   //       this.search(newVal)
-   //    }
-   // },
    methods: {
-      ...mapActions('party', ['addTrackToProposed']),
+      ...mapActions('party', ['addTrackToProposedAndPlaylist']),
       async search() {
          await SearchApi.searchSong(this.search_text).then(response => {
             const parsed_tracks = Utils.cleanTracksResponse(response.data.tracks.items)
@@ -48,7 +43,7 @@ export default {
       },
       async selectTrack(track_id) {
          const track = this.result_tracks.find(track => (track.id = track_id))
-         await this.addTrackToProposed(track)
+         await this.addTrackToProposedAndPlaylist(track)
          this.$router.back()
       }
    }

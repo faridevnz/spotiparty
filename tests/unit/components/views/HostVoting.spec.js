@@ -1,12 +1,20 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils'
 import HostVoting from '@/components/views/HostVoting.vue'
-import Song from '@/components/Song.vue'
 import BattleVote from '@/components/BattleVote.vue'
 import Vuex from 'vuex'
+import VueRouter from 'vue-router'
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
+localVue.use(VueRouter)
 
+//router
+const routes = []
+const router = new VueRouter({
+   mode: 'history',
+   base: process.env.BASE_URL,
+   routes
+})
 // store
 const party = {
    namespaced: true,
@@ -49,21 +57,10 @@ describe('Component', () => {
    test('is a Vue instance', () => {
       const wrapper = shallowMount(HostVoting, {
          localVue,
-         store
+         store,
+         router
       })
       expect(wrapper.isVueInstance()).toBeTruthy()
-   })
-})
-
-describe('HostVoting democracy mode', () => {
-   test('correct rendering of nested components', async () => {
-      const wrapper = mount(HostVoting, {
-         localVue,
-         store
-      })
-      expect(wrapper.find(Song).exists()).toBe(true)
-      expect(wrapper.findAll(Song).length).toBe(2)
-      expect(wrapper.find(Song).attributes('class')).toContain('selected')
    })
 })
 
@@ -72,7 +69,8 @@ describe('HostVoting battle mode', () => {
       store.state.party.party_mode.mode = 'battle'
       const wrapper = mount(HostVoting, {
          localVue,
-         store
+         store,
+         router
       })
       expect(wrapper.find(BattleVote).exists()).toBe(true)
       expect(wrapper.findAll(BattleVote).length).toBe(2)

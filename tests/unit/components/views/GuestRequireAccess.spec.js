@@ -1,9 +1,15 @@
-import { mount, shallowMount } from '@vue/test-utils'
+import { mount, shallowMount, createLocalVue } from '@vue/test-utils'
 import GuestRequireAccess from '@/components/views/GuestRequireAccess.vue'
+import BaseButton from '@/components/base_components/BaseButton.vue'
+
+const localVue = createLocalVue()
+localVue.component('BaseButton', BaseButton)
 
 describe('Component', () => {
    test('is a Vue instance', () => {
-      const wrapper = shallowMount(GuestRequireAccess)
+      const wrapper = shallowMount(GuestRequireAccess, {
+         localVue
+      })
       expect(wrapper.isVueInstance()).toBeTruthy()
    })
    test('correct rendering of nested components', () => {

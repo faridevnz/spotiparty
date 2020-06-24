@@ -30,11 +30,11 @@
          </div>
       </router-link>
 
-      <router-link :to="{ name: 'GuestVoting' }">
+      <router-link :to="{ name: 'GuestPartyTracks' }">
          <div
             :class="{
                active: isOnGuestVoting,
-               inactive: isOnGuestVoting,
+               inactive: !isOnGuestVoting,
                'tab-element': true
             }"
          >
@@ -71,24 +71,22 @@ export default {
       }
    },
    computed: {
-      ...mapState('user', ['guest_personal_account'])
-   },
-   watch: {
-      $route(to) {
-         this.current_route_name = to.name
-      }
-   },
-   methods: {
+      ...mapState('user', ['guest_personal_account']),
       isOnGuestVoting() {
          if (
             this.current_route_name == 'GuestVoting' ||
-            this.current_route_name == 'PartyTracks' ||
-            this.current_route_name == 'ProposedTracks'
+            this.current_route_name == 'GuestPartyTracks' ||
+            this.current_route_name == 'GuestProposedTracks'
          ) {
             return true
          } else {
             return false
          }
+      }
+   },
+   watch: {
+      $route(to) {
+         this.current_route_name = to.name
       }
    }
 }

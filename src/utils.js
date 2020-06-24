@@ -26,7 +26,6 @@ export default {
    cleanTracksFromPlaylistResponse(response) {
       const tracks = []
       response.forEach(track => {
-         console.log(track)
          if (track.track != null) {
             const artists = this.cleanArtistsResponse(track.track.artists)
             const parsedTrack = {
@@ -48,7 +47,6 @@ export default {
    cleanTracksResponse(response) {
       const tracks = []
       response.forEach(track => {
-         console.log(track)
          if (track != null) {
             const artists = this.cleanArtistsResponse(track.artists)
             const parsedTrack = {

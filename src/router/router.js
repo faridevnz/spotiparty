@@ -19,7 +19,8 @@ import GuestPlayer from '@/components/views/GuestPlayer.vue'
 import GuestVoting from '@/components/views/GuestVoting.vue'
 import GuestSetting from '@/components/views/GuestSetting.vue'
 import GuestRequireAccess from '@/components/views/GuestRequireAccess.vue'
-import SearchSong from '@/components/views/SearchSong.vue'
+import HostSearchSong from '@/components/views/HostSearchSong.vue'
+import GuestSearchSong from '@/components/views/GuestSearchSong.vue'
 import PartyTracks from '@/components/views/PartyTracks.vue'
 import ProposedTracks from '@/components/views/ProposedTracks.vue'
 
@@ -90,9 +91,9 @@ const routes = [
       meta: { requireAuth: true },
       children: [
          {
-            path: 'search-song',
-            name: 'SearchSong',
-            component: SearchSong
+            path: 'guest-search-song',
+            name: 'GuestSearchSong',
+            component: GuestSearchSong
          },
          {
             path: 'player',
@@ -105,13 +106,13 @@ const routes = [
             component: GuestVoting,
             children: [
                {
-                  path: 'party-tracks',
-                  name: 'PartyTracks',
+                  path: 'guest-party-tracks',
+                  name: 'GuestPartyTracks',
                   component: PartyTracks
                },
                {
                   path: 'proposed-tracks',
-                  name: 'ProposedTracks',
+                  name: 'GuestProposedTracks',
                   component: ProposedTracks
                }
             ]
@@ -135,6 +136,11 @@ const routes = [
       meta: { requireAuth: true },
       children: [
          {
+            path: 'host-search-song',
+            name: 'HostSearchSong',
+            component: HostSearchSong
+         },
+         {
             path: 'player',
             name: 'HostPlayer',
             component: HostPlayer
@@ -142,7 +148,19 @@ const routes = [
          {
             path: 'votes',
             name: 'HostVoting',
-            component: HostVoting
+            component: HostVoting,
+            children: [
+               {
+                  path: 'host-party-tracks',
+                  name: 'HostPartyTracks',
+                  component: PartyTracks
+               },
+               {
+                  path: 'host-proposed-tracks',
+                  name: 'HostProposedTracks',
+                  component: ProposedTracks
+               }
+            ]
          },
          {
             path: 'settings',
