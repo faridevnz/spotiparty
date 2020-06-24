@@ -32,6 +32,7 @@
 ## Importante
 
 L'applicazione per essere utilizzata richiede un account Spotify Premium. 
+
 Il layout è stato progettato per il mobile, quindi se si decide di visitare il sito da desktop la scheda di Chrome dovrà assumere le dimensioni di un dispositivo mobile visualizzare correttamente il layout.
 
 ## Project setup
@@ -61,6 +62,8 @@ npm run test:unit
 ## Commit history e altre info
 
 La commit history completa è disponibile online nella repo a [questo link](https://github.com/SpotiParty/spotiparty). Il master presenta solo commit corrispondenti ai branch della repo e hotfix per la production. Per visualizzare le singole commit di un branch, basterà cliccare sulla corretta commit (che avrà il formato `nome #numero`) e si verrà reindirizzati alla pull request corrispondente al branch. Nella pull request saranno presenti tutte le informazioni riguardanti le commit, code reviews e altri commenti tra membri del team.
+
 Alternativamente si può navigare alla tab `pull requests` della repo o a [questo link](https://github.com/SpotiParty/spotiparty/pulls?q=is%3Apr+is%3Aopen+sort%3Aupdated-desc), cancellare `is:open` dalla barra dei filtri, e leggere la lista di tutte le pull requests chiuse.
-**Altre info**
+
+**Altre info**: 
 Informazioni riguardanti la contribution possono essere trovate a [questo link](https://github.com/SpotiParty/spotiparty/graphs/contributors)
